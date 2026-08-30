@@ -7,6 +7,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zain:wght@300;400;700;800;900&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Reem+Kufi:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+window.KHUTWAH_CONFIG={
+  supabaseUrl:'https://cbeeevstlcrmnzzjmlnb.supabase.co',
+  supabasePublishableKey:'sb_publishable_nVLS7sK-m3YICZVGrqJkzQ_-pC1-U9a'
+};
+</script>
 <style>
 :root{
   --bg:#EDEFEA;
@@ -710,7 +717,12 @@ textarea:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 4px var(--
 <body>
 <div id="app"><div id="shell"></div><div id="modalRoot"></div><div id="toastRoot"></div></div>
 <script>
-/* ==================== بيانات تجريبية ==================== */
+const REMOTE=true;
+const SB=window.supabase.createClient(window.KHUTWAH_CONFIG.supabaseUrl,
+ window.KHUTWAH_CONFIG.supabasePublishableKey,{auth:{persistSession:true,autoRefreshToken:true}});
+let REMOTE_HOLD=null,LEADERBOARD=[],CHAL_BOARD=[],REMOTE_READY=false;
+
+/* ==================== البيانات ==================== */
 const FIELDS=[
  {id:'imani',name:'إيماني',desc:'رقائق وتزكية',c:'var(--f-imani)'},
  {id:'shari',name:'شرعي',desc:'علوم الشريعة',c:'var(--f-shari)'},
@@ -720,40 +732,11 @@ const FIELDS=[
 /* الاختيارات الشخصية منفصلة عن المجالات الخمسة والمقررات العامة. */
 const PERSONAL_FIELD={id:'personal',name:'خارج المقررات',desc:'اختيار شخصي',c:'#6C7B75'};
 let PERSONAL_COURSES=[];
-let COURSES=[
- {id:'c1',field:'imani',type:'read',title:'مدارج السالكين (منتخبات)',by:'ابن القيم',total:320,now:1,note:'منتخبات من شرح ابن القيم لمنازل «إياك نعبد وإياك نستعين» — يعالج أمراض القلوب ويبني التعلّق بالله. يُقرأ بتأنٍّ، صفحة تُثمر أكثر من عشر تُطوى.',copies:6},
- {id:'c2',field:'imani',type:'listen',title:'سلسلة: تزكية النفس',by:'د. عبدالله السلمي',total:420,note:'سلسلة صوتية في تطهير النفس من آفاتها: الرياء والحسد والكبر، مع عمليات تطبيقية لكل آفة.'},
- {id:'c3',field:'shari',type:'read',title:'الأصول الثلاثة وشرحها',by:'—',total:140,note:'متن مختصر في أصول الاعتقاد مع شرحه، أساس لا يُبنى عليه غيره. مناسب للمبتدئ.',copies:5},
- {id:'c4',field:'shari',type:'listen',title:'شرح الأربعين النووية',by:'الشيخ محمد الحمد',total:600,now:1,note:'شرح موسّع لأربعين الإمام النووي، يجمع بين تحرير المعاني والتطبيق العملي في السلوك.'},
- {id:'c5',field:'thaqafi',type:'read',title:'مقدمة في الفكر المعاصر',by:'—',total:260,note:'مدخل لفهم التيارات الفكرية المعاصرة وأثرها في تصورات الشباب، بلغة مبسّطة.',copies:3},
- {id:'c6',field:'thaqafi',type:'listen',title:'بودكاست: قراءة في الواقع',by:'—',total:300,note:'حلقات تحليلية تقرأ الأحداث الجارية في ضوء المنطلقات الشرعية، مع تدريب على النظر الكلي.'},
- {id:'c7',field:'mahari',type:'read',title:'إدارة الوقت للطالب',by:'—',total:180,note:'دليل عملي لترتيب يوم طالب العلم: تحديد الأولويات، وكسر التسويف، وبناء العادة.',copies:4},
- {id:'c8',field:'mahari',type:'listen',title:'دورة: مهارات الإلقاء',by:'أ. سعد المطيري',total:240,note:'دورة صوتية في مهارات الإلقاء والعرض: بناء الفكرة، وضبط الصوت، والتعامل مع رهبة الجمهور.'},
- {id:'c9',field:'adabi',type:'read',title:'مختارات من الأدب العربي',by:'—',total:210,note:'مختارات من عيون النثر والشعر العربي مع تعليق يبيّن مواطن الجمال ويربّي الذائقة.',copies:null},
- {id:'c10',field:'adabi',type:'listen',title:'أمسيات شعرية مشروحة',by:'—',total:180,note:'أمسيات شعرية مشروحة بيتًا بيتًا، تُقرّب المعنى وتكشف الصورة البلاغية.'}];
-let STUDENTS=[
- {code:'1042',name:'عبدالمحسن الصوينع',group:'المجموعة أ',supervisor:'2200',goalP:20,goalM:30,shelf:['c1','c4']},
- {code:'1043',name:'عمر الفايز',group:'المجموعة أ',supervisor:'2200',goalP:15,goalM:20,shelf:['c3','c6']},
- {code:'1044',name:'عبدالله الغيث',group:'المجموعة أ',supervisor:'2200',goalP:25,goalM:45,shelf:['c5','c8','c9']},
- {code:'1045',name:'البراء السعيد',group:'المجموعة أ',supervisor:'2200',goalP:10,goalM:30,shelf:['c7','c2']},
- {code:'1046',name:'عمار العسكر',group:'المجموعة أ',supervisor:'2200',goalP:20,goalM:20,shelf:['c1','c10']},
- {code:'1049',name:'محمد المرشد',group:'المجموعة ب',supervisor:'2201',goalP:20,goalM:30,shelf:['c5','c6']},
- {code:'1050',name:'عبدالعزيز العامر',group:'المجموعة ب',supervisor:'2201',goalP:25,goalM:45,shelf:['c1','c8']},
- {code:'1051',name:'جاسر الجاسر',group:'المجموعة ب',supervisor:'2201',goalP:10,goalM:20,shelf:['c7','c10']},
- {code:'1052',name:'خالد الحلافي',group:'المجموعة ب',supervisor:'2201',goalP:20,goalM:30,shelf:['c9','c4']},
- {code:'1053',name:'عمر السديس',group:'المجموعة ب',supervisor:'2201',goalP:15,goalM:25,shelf:['c5','c2']},
- {code:'1054',name:'أحمد السعيد',group:'المجموعة ج',supervisor:'2202',goalP:30,goalM:60,shelf:['c3','c8']},
- {code:'1055',name:'يوسف السنان',group:'المجموعة ج',supervisor:'2202',goalP:20,goalM:30,shelf:['c1','c6']},
- {code:'1056',name:'فهد الهريش',group:'المجموعة ج',supervisor:'2202',goalP:10,goalM:20,shelf:['c7','c4']},
- {code:'1057',name:'الوليد الجندل',group:'المجموعة ج',supervisor:'2202',goalP:25,goalM:40,shelf:['c9','c10']},
- {code:'1058',name:'عمر الضويحي',group:'المجموعة ج',supervisor:'2202',goalP:15,goalM:25,shelf:['c5','c4']}];
-let SUPERVISORS=[{code:'2200',name:'أبو الوليد الفوزان',group:'المجموعة أ'},
-                 {code:'2201',name:'أ. نايف الدوسري',group:'المجموعة ب'},
-                 {code:'2202',name:'أ. عبدالرحمن العتيبي',group:'المجموعة ج'}];
-let CHALLENGE={active:true,title:'ختمة الأسبوع',
- desc:'من بلغ ١٢٠ صفحة خلال الأسبوع دخل قرعة على نسخة من «مدارج السالكين».',
- metric:'pages',target:120,start:null,end:null};
-const ADMIN={code:'9000',name:'أبو يعقوب السحيباني'};
+let COURSES=[];
+let STUDENTS=[];
+let SUPERVISORS=[];
+let CHALLENGE={active:false,title:'',desc:'',metric:'pages',target:1,start:null,end:null};
+let ADMIN={code:'',name:''};
 const TZ=3;        /* الرياض UTC+3 */
 const DAY_START=3; /* اليوم البرنامجي يبدأ ٣ فجرًا */
 function riyadhNow(){return new Date(Date.now()+TZ*3600000)} /* حقول UTC = توقيت الرياض */
@@ -769,27 +752,7 @@ const DSHORT=['أحد','اثنين','ثلاثاء','أربعاء','خميس','ج
 const dayLabel=i=>DAYS[new Date(i+'T00:00').getDay()];
 let ENTRIES=[];
 let GOALS_OPEN=true;  /* نافذة تعديل المقدار — مفتوحة بداية الأسبوع، يغلقها التنفيذي بعد ضبط الجميع */
-STUDENTS.forEach(s=>{s.goalSet=true});
-(function(){const r=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
- STUDENTS.forEach((s,i)=>{
-  const shelf=(s.shelf||[]).map(id=>COURSES.find(c=>c.id===id)).filter(Boolean);
-  const rd=shelf.filter(c=>c.type==='read'), ls=shelf.filter(c=>c.type==='listen');
-  const commit=[.95,.88,.8,.72,.62,.55,.9,.75,.68,.5,.85,.6,.78,.45,.7][i%15];
-  for(let d=60;d>=0;d--){
-   if(d===0&&i%3===2)continue;                 /* بعضهم ما سجّل اليوم بعد */
-   const full=Math.random()<commit;            /* يوم حقق فيه مقداره كاملًا */
-   if(!full&&Math.random()<.45)continue;       /* يوم بلا تسجيل */
-   const pg=full?s.goalP+r(0,9):Math.max(1,Math.round(s.goalP*(r(25,80)/100)));
-   const mn=full?s.goalM+r(0,14):Math.max(1,Math.round(s.goalM*(r(25,80)/100)));
-   if(rd.length){const c=rd[r(0,rd.length-1)];
-    ENTRIES.push({code:s.code,date:dayISO(d),course:c.id,pages:pg,minutes:0})}
-   if(ls.length){const c=ls[r(0,ls.length-1)];
-    ENTRIES.push({code:s.code,date:dayISO(d),course:c.id,pages:0,minutes:mn})}
-  }});})();
-
-CHALLENGE.start=dayISO(3);CHALLENGE.end=dayISO(-3);
-ENTRIES.push({code:STUDENTS[4].code,date:dayISO(1),course:STUDENTS[4].shelf[0],pages:420,minutes:0});
-ENTRIES.push({code:STUDENTS[9].code,date:dayISO(2),course:STUDENTS[9].shelf[1]||STUDENTS[9].shelf[0],pages:0,minutes:520});
+/* تُحمّل البيانات من Supabase بعد التحقق من الرمز. */
 
 /* ==================== أدوات ==================== */
 let S={role:null,me:null,view:'today',field:null,student:null,modal:null,toast:null,buf:''};
@@ -819,19 +782,25 @@ function daysSince(d){return eachDay(d,todayISO()).length-1}
 /* ── مخزون النسخ: عدّاد حيازة يُبنى مرة ويُحدَّث بالزيادة/النقصان ── */
 let HOLD={},WAIT={};
 function rebuildHold(){HOLD={};
+ if(REMOTE&&REMOTE_HOLD){HOLD={...REMOTE_HOLD};return}
+ /* قيود العهدة هي المصدر الأساسي، ونعدّ الرف فقط كحماية لبيانات قديمة بلا قيد عهدة. */
+ for(const k in LOAN){const id=k.slice(k.indexOf('|')+1);HOLD[id]=(HOLD[id]||0)+1}
  for(const s of STUDENTS)for(const id of (s.shelf||[])){const c=COURSES.find(x=>x.id===id);
-  if(!(c&&c.type==='read'&&c.copies!=null))HOLD[id]=(HOLD[id]||0)+1}
- for(const k in LOAN){const id=k.slice(k.indexOf('|')+1);HOLD[id]=(HOLD[id]||0)+1}}
+  if(c&&c.type==='read'&&c.copies!=null&&!LOAN[lk(s.code,id)])HOLD[id]=(HOLD[id]||0)+1}}
 const heldCount=id=>HOLD[id]||0;
 function availOf(c){return (c.type!=='read'||c.copies==null)?null:Math.max(0,c.copies-heldCount(c.id))}
 const waitList=id=>WAIT[id]||[];
 const waitPos=(id,code)=>waitList(id).indexOf(code)+1;
+/* المتاح يُوزّع على أوائل قائمة الانتظار أولًا؛ وما زاد عنهم يبقى متاحًا للآخرين. */
+function canClaimCopy(c,code){if(!c)return false;const av=availOf(c);if(av===null)return true;if(av<1)return false;
+ const q=waitList(c.id),p=q.indexOf(code);return p>-1?p<av:q.length<av}
 const entriesOf=(c,d)=>d?dayOf(c,d).list:(BYCODE[c]||[]);
 const sum=(a,k)=>{let t=0;for(let i=0;i<a.length;i++)t+=a[i][k];return t};
 const totalOf=c=>TOT[c]||0;
 function memo(k,fn){return k in MEMO?MEMO[k]:(MEMO[k]=fn())}
 function canEditGoal(s){return GOALS_OPEN||!s.goalSet}
-function toggleGoals(){GOALS_OPEN=!GOALS_OPEN;lastKey='';renderShell();
+function toggleGoals(){if(REMOTE)return remoteCommand('toggle_goals',{},'تحدّثت نافذة المقادير.');
+ GOALS_OPEN=!GOALS_OPEN;lastKey='';renderShell();
  toast(GOALS_OPEN?'فُتح تغيير المقدار لكل الطلاب — أغلقه بعد ضبطهم.':'أُغلق تغيير المقدار. المقادير مثبّتة.')}
 ENTRIES.forEach(e=>{if(!e.id)e.id=newEid()});
 STUDENTS.forEach(s=>(s.shelf||[]).forEach(id=>{const c=COURSES.find(x=>x.id===id);
@@ -843,6 +812,42 @@ const personalCoursesOf=code=>PERSONAL_COURSES.filter(c=>c.owner===code);
 const studentByCode=c=>STUDENTS.find(s=>s.code===c);
 const pct=(a,b)=>b>0?Math.min(100,Math.round(a/b*100)):(a>0?100:0);
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function hydrateRemote(state){
+ const ps=state.profiles||[],shelves=state.shelves||[];
+ STUDENTS=ps.filter(x=>x.role==='student').map(x=>({code:x.public_code,name:x.name,group:x.group_name||'—',
+  supervisor:x.supervisor_code||'',goalP:+x.goal_pages,goalM:+x.goal_minutes,goalSet:!!x.goal_set,shelf:[]}));
+ SUPERVISORS=ps.filter(x=>x.role==='supervisor').map(x=>({code:x.public_code,name:x.name,group:x.group_name||'—'}));
+ const ad=ps.find(x=>x.role==='admin');ADMIN=ad?{code:ad.public_code,name:ad.name}:{code:'',name:'مشرف تنفيذي'};
+ for(const x of shelves){const st=studentByCode(x.public_code);if(st)st.shelf.push(x.course_id)}
+ COURSES=[];PERSONAL_COURSES=[];
+ for(const x of (state.courses||[])){const c={id:x.id,field:x.field_id,type:x.course_type,title:x.title,
+   by:x.author||'—',total:+x.total,note:x.note||'',copies:x.copies==null?null:+x.copies,
+   owner:x.owner_code||null,personal:!!x.owner_code};(c.personal?PERSONAL_COURSES:COURSES).push(c)}
+ ENTRIES=(state.entries||[]).map(x=>({id:x.id,code:x.public_code,date:x.entry_date,course:x.course_id,
+  pages:+x.pages||0,minutes:+x.minutes||0}));
+ LOAN={};for(const x of (state.loans||[]))LOAN[lk(x.public_code,x.course_id)]={st:x.status,at:x.status_date};
+ WAIT={};for(const x of (state.waitlist||[]))WAIT[x.course_id]=x.public_codes||[];
+ REMOTE_HOLD={};for(const x of (state.inventory||[]))REMOTE_HOLD[x.course_id]=+x.held_count||0;
+ const set=state.settings||{};GOALS_OPEN=set.goals_open!==false;
+ const ch=state.challenge;CHALLENGE=ch?{active:!!ch.active,title:ch.title||'',desc:ch.description||'',
+  metric:ch.metric||'pages',target:+ch.target||1,start:ch.start_date,end:ch.end_date}
+  :{active:false,title:'',desc:'',metric:'pages',target:1,start:null,end:null};
+ LEADERBOARD=state.leaderboard||[];CHAL_BOARD=state.challenge_board||[];reindex();
+ return ps.find(x=>x.public_code===state.me?.public_code)||state.me
+}
+async function remoteCommand(command,payload,success){
+ if(remoteCommand.busy)return;remoteCommand.busy=true;
+ try{const code=S.me&&S.me.code,role=S.role,view=S.view,field=S.field,student=S.student;
+  const {data,error}=await SB.rpc('app_command',{p_command:command,p_payload:payload||{}});if(error)throw error;
+  const p=hydrateRemote(data.state),me=role==='student'?studentByCode(code):role==='supervisor'?SUPERVISORS.find(x=>x.code===code):ADMIN;
+  S={...S,role,me,view,field,student,modal:null};renderModal();lastKey='';renderShell();toast(data.message||success||'تم الحفظ.');return data.result
+ }catch(e){toast(e.message||'تعذّر الحفظ. حاول مرة أخرى.')}finally{remoteCommand.busy=false}}
+async function initRemote(){
+ drawLogin('جاري الاتصال…');
+ try{const {data}=await SB.auth.getSession();if(!data.session){const r=await SB.auth.signInAnonymously();if(r.error)throw r.error}
+  REMOTE_READY=true;drawLogin()
+ }catch(e){drawLogin('تعذّر الاتصال. تأكد من تفعيل Anonymous Sign-Ins في Supabase ثم حدّث الصفحة.')}}
 
 /* ==================== الدخول ==================== */
 function loginHTML(err){
@@ -868,10 +873,7 @@ function loginHTML(err){
      <button onclick="tap(event,'clear')" aria-label="مسح">C</button>
    </div>
    <button class="btn" onclick="login()">دخول</button>
-   <p class="hint">أرقام للتجربة:<br>
-     طالب <code onclick="fill('1042')">1042</code> ·
-     مشرف <code onclick="fill('2200')">2200</code> ·
-     مشرف تنفيذي <code onclick="fill('9000')">9000</code></p>
+   <p class="hint">استخدم رمزك الشخصي المكوّن من أربعة أرقام.<br>لا تشاركه مع أحد.</p>
   </div></div>`;
 }
 function paintDigits(){const w=document.getElementById('cw');if(!w)return;
@@ -892,15 +894,17 @@ function tap(e,k){
  paintDigits();
  if(S.buf.length===4)setTimeout(login,220)}
 function drawLogin(err){shell().innerHTML=loginHTML(err)}
-function login(){
- const v=S.buf, st=studentByCode(v), sv=SUPERVISORS.find(x=>x.code===v);
+async function login(){
+ if(login.busy)return;if(!REMOTE_READY)return loginError('الاتصال بقاعدة البيانات لم يجهز بعد.');
+ const v=S.buf;if(v.length!==4)return loginError('أدخل الرمز الرباعي كاملًا.');login.busy=true;
  let role=null,me=null,view='today';
- if(st){role='student';me=st;view='today'}
- else if(sv){role='supervisor';me=sv;view='students'}
- else if(v===ADMIN.code){role='admin';me=ADMIN;view='students'}
- else{loginError('الرمز غير مسجّل. تأكد منه أو راجع مشرفك.');return}
+ try{const {data,error}=await SB.rpc('claim_access_code',{p_code:v});if(error)throw error;
+  if(data?.error)throw new Error(data.error);
+  const p=hydrateRemote(data.state);role=p.role;me=role==='student'?studentByCode(p.public_code)
+   :role==='supervisor'?SUPERVISORS.find(x=>x.code===p.public_code):ADMIN;view=role==='student'?'today':'students'
+ }catch(e){login.busy=false;const m=e.message||'';return loginError(m.includes('max_devices')?'بلغت الحد المسموح للأجهزة. راجع المشرف التنفيذي.':m.includes('too_many_attempts')?'محاولات كثيرة. انتظر 15 دقيقة ثم حاول مجددًا.':'الرمز غير صحيح أو غير مفعّل.');}
  const card=$('#lcard'); if(card&&!reduced){card.classList.add('leaving');}
- setTimeout(()=>{S={...S,role,me,view,buf:'',field:null,student:null};lastKey='';renderShell();},reduced?0:340);
+ setTimeout(()=>{S={...S,role,me,view,buf:'',field:null,student:null};lastKey='';renderShell();login.busy=false},reduced?0:340);
 }
 function logout(){const m=shell().querySelector('main');if(m&&!reduced)m.style.opacity=0;
  setTimeout(()=>{S={role:null,me:null,view:'today',field:null,student:null,modal:null,buf:''};lastKey='';drawLogin();},reduced?0:200);}
@@ -931,13 +935,16 @@ function courseProgress(code,c){return CTOT[code+'|'+c.id]||0}
 function shelfOf(code){const s2=studentByCode(code);return (s2&&s2.shelf)||[]}
 function onShelf(code,id){return shelfOf(code).indexOf(id)>-1}
 function isDone(code,c){return courseProgress(code,c)>=c.total}
+function openShelfOf(code){return shelfOf(code).filter(id=>{const c=courseById(id);return c&&!isDone(code,c)})}
+const onOpenShelf=(code,id)=>openShelfOf(code).indexOf(id)>-1;
 function shelfCourses(code,type){return shelfOf(code).map(courseById)
  .filter(c=>c&&c.type===type&&!isDone(code,c))}
 function finishedCourses(code){return COURSES.concat(personalCoursesOf(code))
  .filter(c=>courseProgress(code,c)>=c.total&&courseProgress(code,c)>0)}
 function startCourse(id,quiet){const me=S.me,c=courseById(id);
+ if(REMOTE)return remoteCommand('start_course',{course_id:id},'تحدّث رفّك.');
  if(onShelf(me.code,id)||loanOf(me.code,id))return;
- if(availOf(c)===0){if(!quiet){S.modal={t:'taken',id};renderModal()}return}
+ if(!c||!canClaimCopy(c,me.code)){if(!quiet){S.modal={t:'taken',id};renderModal()}return}
  if(isPhysical(c)){                                   /* كتاب ورقي: حجز ينتظر التسليم */
   LOAN[lk(me.code,id)]={st:'pending',at:todayISO()};
   HOLD[id]=(HOLD[id]||0)+1;
@@ -950,19 +957,24 @@ function startCourse(id,quiet){const me=S.me,c=courseById(id);
  if(WAIT[id])WAIT[id]=WAIT[id].filter(x=>x!==me.code);
  if(!quiet){lastKey='';renderShell();toast('أُضيف لرفّك: '+c.title)}}
 function handOver(code,id){const L=loanOf(code,id);if(!L)return;
+ if(REMOTE)return remoteCommand('hand_over',{public_code:code,course_id:id},'تم تسليم النسخة.');
  L.st='out';L.at=todayISO();const st=studentByCode(code);
  if(!onShelf(code,id))st.shelf=[...(st.shelf||[]),id];
  lastKey='';renderShell();toast('سُلّمت النسخة لـ'+st.name+' — صار يقدر يسجّل فيها.')}
-function rejectReq(code,id){delete LOAN[lk(code,id)];HOLD[id]=Math.max(0,(HOLD[id]||1)-1);
+function rejectReq(code,id){if(REMOTE)return remoteCommand('cancel_loan',{public_code:code,course_id:id},'أُلغي الحجز.');
+ delete LOAN[lk(code,id)];HOLD[id]=Math.max(0,(HOLD[id]||1)-1);
  lastKey='';renderShell();toast('أُلغي الطلب وعادت النسخة للمتاح.')}
 function markReturn(id){const me=S.me,L=loanOf(me.code,id);if(!L)return;
+ if(REMOTE)return remoteCommand('mark_return',{course_id:id},'سُجّل طلب الإرجاع.');
  L.st='back';L.at=todayISO();me.shelf=shelfOf(me.code).filter(x=>x!==id);
  lastKey='';renderShell();toast('أبلغنا المشرف التنفيذي — سلّم النسخة ليُغلق القيد.')}
-function confirmReturn(code,id){delete LOAN[lk(code,id)];HOLD[id]=Math.max(0,(HOLD[id]||1)-1);
+function confirmReturn(code,id){if(REMOTE)return remoteCommand('confirm_return',{public_code:code,course_id:id},'تم تأكيد الاستلام.');
+ delete LOAN[lk(code,id)];HOLD[id]=Math.max(0,(HOLD[id]||1)-1);
  const st=studentByCode(code);st.shelf=shelfOf(code).filter(x=>x!==id);
  const w=waitList(id).length;lastKey='';renderShell();
  toast('استُلمت النسخة من '+st.name+(w?' — ينتظرها '+w+' طلاب.':'.'))}
 function stopCourse(id){const me=S.me;
+ if(REMOTE)return remoteCommand('stop_course',{course_id:id},'تحدّث رفّك.');
  if(isPhysical(courseById(id))&&loanOf(me.code,id))return markReturn(id);
  if(!onShelf(me.code,id))return;
  me.shelf=shelfOf(me.code).filter(x=>x!==id);
@@ -971,20 +983,24 @@ function stopCourse(id){const me=S.me;
  lastKey='';renderShell();
  if(c&&c.personal)return toast('أوقفت متابعته. إنجازك محفوظ، وتقدر تستأنفه من «خارج المقررات».');
  toast('أوقفت متابعته. إنجازك محفوظ'+(a!==null&&w?` — تحرّرت نسخة ينتظرها ${w} ${w===1?'طالب':'طلاب'}.`:'.'))}
-function joinWait(id){const me=S.me;if(waitPos(id,me.code))return;
+function joinWait(id){if(REMOTE)return remoteCommand('join_wait',{course_id:id},'أُضيف اسمك لقائمة الانتظار.');
+ const me=S.me;if(waitPos(id,me.code))return;
  (WAIT[id]||(WAIT[id]=[])).push(me.code);
  S.modal=null;renderModal();lastKey='';renderShell();
  toast('سُجّلت في الانتظار — ترتيبك '+waitPos(id,me.code)+'.')}
-function leaveWait(id){WAIT[id]=waitList(id).filter(x=>x!==S.me.code);
+function leaveWait(id){if(REMOTE)return remoteCommand('leave_wait',{course_id:id},'خرجت من قائمة الانتظار.');
+ WAIT[id]=waitList(id).filter(x=>x!==S.me.code);
  lastKey='';renderShell();toast('خرجت من قائمة الانتظار.')}
 function bumpCopies(id,d){const c=courseById(id);
+ if(REMOTE)return remoteCommand('bump_copies',{course_id:id,delta:d},'تحدّث عدد النسخ.');
  if(c.copies==null){c.copies=Math.max(1,heldCount(id));return finishBump(c)}
  const next=c.copies+d;
  if(next<heldCount(id))return toast('لا يمكن — '+heldCount(id)+' نسخ بيد الطلاب الآن.');
  if(next<0)return; c.copies=next; finishBump(c)}
 function finishBump(c){lastKey='';renderShell();
  toast('نسخ «'+c.title+'»: '+c.copies+' · المتاح '+availOf(c))}
-function setUnlimited(id){const c=courseById(id);c.copies=null;
+function setUnlimited(id){if(REMOTE)return remoteCommand('set_unlimited',{course_id:id},'أصبح المقرر بلا حصر.');
+ const c=courseById(id);c.copies=null;
  lastKey='';renderShell();toast('«'+c.title+'» صار متاحًا بلا حصر.')}
 function toFields(){const el=document.getElementById('fieldsec');
  el&&el.scrollIntoView({behavior:reduced?'auto':'smooth',block:'start'})}
@@ -1120,11 +1136,11 @@ function todayView(){
   </div>
   ${stairsCard(me,1)}
  </div>
- ${(()=>{const ready=Object.keys(WAIT).filter(id=>waitPos(id,me.code)===1&&availOf(courseById(id))>0);
+ ${(()=>{const ready=Object.keys(WAIT).filter(id=>waitPos(id,me.code)>0&&canClaimCopy(courseById(id),me.code));
    if(!ready.length)return '';const c=courseById(ready[0]);
    return `<div class="goalwin open stagger" style="--i:2"><span class="gi2">📗</span>
     <div style="flex:1"><b>تحرّرت نسخة من «${esc(c.title)}»</b>
-     <p>كنت أول المنتظرين — أضفها لرفّك قبل أن يسبقك غيرك.</p></div>
+     <p>وصل دورك في قائمة الانتظار — النسخة محفوظة لأصحاب الدور قبلك ثم لك.</p></div>
     <button class="btn sm" onclick="startCourse('${c.id}')">أضفها لرفّي</button></div>`})()}
  ${(()=>{const mine=reqList().filter(r=>r.code===me.code&&r.st!=='out');
    if(!mine.length)return '';
@@ -1148,7 +1164,7 @@ function todayView(){
    <span class="chip">اختر منها مقرراتك</span></div>
  <div class="fields">${FIELDS.map((f,i)=>{
    const es=entriesOf(me.code).filter(x=>courseById(x.course).field===f.id);
-   const act=shelfOf(me.code).map(courseById).filter(c=>c&&c.field===f.id).length;
+   const act=openShelfOf(me.code).map(courseById).filter(c=>c&&c.field===f.id).length;
    return `<button class="field stagger" style="--c:${f.c};--i:${13+i}" onclick="openField('${f.id}')">
      <h3>${f.name}</h3><p>${f.desc}</p>
      <div class="tally">${act?`<b style="color:${f.c}">${act} قيد المتابعة</b> · `:''}<span class="num">${sum(es,'pages')}</span>ص · <span class="num">${sum(es,'minutes')}</span>د</div>
@@ -1245,17 +1261,17 @@ function logView(){
  <div class="tl">${tl}</div>`}
 
 function boardView(){
- const rank=STUDENTS.map(s=>{const e=entriesOf(s.code);return{s,p:sum(e,'pages'),m:sum(e,'minutes'),t:totalOf(s.code)}})
-  .sort((a,b)=>b.t-a.t);
- const max=rank[0]?.t||1;
+ const rank=(LEADERBOARD.length?LEADERBOARD.map(x=>({s:{code:x.public_code,name:x.name},today:+x.today_rate,
+  avg:+x.avg_rate,streak:+x.streak})):STUDENTS.map(s=>({s,today:rateOf(s,todayISO()),avg:achievementRate(s,7),streak:streakOf(s.code)})))
+  .sort((a,b)=>b.avg-a.avg||b.today-a.today||b.streak-a.streak||a.s.name.localeCompare(b.s.name,'ar'));
  return `<div class="card stagger">
-  <p class="eyebrow">الترتيب بمجموع الصفحات والدقائق</p><h2>المتصدرون</h2>
-  <div style="overflow-x:auto"><table style="margin-top:14px;min-width:520px"><thead><tr><th></th><th>الطالب</th><th>صفحات</th><th>دقائق</th><th>المجموع</th><th style="width:110px"></th></tr></thead><tbody>
+  <p class="eyebrow">متوسط تحقيق المقدار خلال آخر ٧ أيام · اليوم غير المنجز يُحسب صفرًا</p><h2>المتصدرون</h2>
+  <div style="overflow-x:auto"><table style="margin-top:14px;min-width:520px"><thead><tr><th></th><th>الطالب</th><th>اليوم</th><th>متوسط ٧ أيام</th><th>المواظبة</th><th style="width:110px"></th></tr></thead><tbody>
   ${rank.map((r,i)=>`<tr style="--i:${i}" class="${r.s.code===S.me.code?'me-row':''}">
    <td class="rank ${i<3?'top':''}">${i+1}</td><td>${esc(r.s.name)}</td>
-   <td class="num">${r.p}</td><td class="num">${r.m}</td>
-   <td class="num" style="font-weight:600">${r.t}</td>
-   <td><div class="bar"><i data-w="${Math.round(r.t/max*100)}"></i></div></td></tr>`).join('')}
+   <td class="num">${r.today}%</td><td class="num" style="font-weight:600">${r.avg}%</td>
+   <td class="num">${r.streak} يوم</td>
+   <td><div class="bar"><i data-w="${r.avg}"></i></div></td></tr>`).join('')}
   </tbody></table></div></div>`}
 function fieldView(){
  const f=fieldById(S.field),list=COURSES.filter(c=>c.field===S.field);
@@ -1266,10 +1282,11 @@ function fieldView(){
    ${cs.length?`<div class="catalog">${cs.map(c=>{
      const dn=courseProgress(S.me.code,c),pr=pct(dn,c.total),on=onShelf(S.me.code,c.id),fin=dn>=c.total;
      const unit=type==='read'?'صفحة':'دقيقة',av=availOf(c),wp=waitPos(c.id,S.me.code);
-     const L=loanOf(S.me.code,c.id);
+     const L=loanOf(S.me.code,c.id),claim=canClaimCopy(c,S.me.code),queueBlocked=av!==null&&av>0&&!claim;
      const avHtml=av===null?'':L&&L.st==='pending'?`<span class="avail wait">⏳ محجوزة — بانتظار التسليم</span>`
        :L&&L.st==='back'?`<span class="avail wait">📥 بانتظار تأكيد الاستلام</span>`
        :on?`<span class="avail have">نسختك بيدك</span>`
+       :queueBlocked?`<span class="avail wait">⏳ ${wp?'دورك '+wp+' — النسخ الحالية لمن قبلك':'النسخ الحالية محفوظة لأصحاب الدور'}</span>`
        :av===0?`<span class="avail none">سُبقت إليه${wp?' · انتظارك '+wp:''}</span>`
        :av===1?`<span class="avail last">آخر نسخة</span>`
        :`<span class="avail ok">متاح <span class="num">${av}</span> من <span class="num">${c.copies}</span></span>`;
@@ -1286,11 +1303,11 @@ function fieldView(){
          :L&&L.st==='pending'?`<button class="startbtn taken" onclick="rejectReq('${S.me.code}','${c.id}')">ألغِ الحجز</button>`
          :L&&L.st==='back'?`<button class="startbtn fin">بانتظار الاستلام</button>`
          :on?`<button class="startbtn ison" onclick="stopCourse('${c.id}')">${isPhysical(c)?'أعدت الكتاب':'أوقفه'}</button>`
-            :av===0?`<button class="startbtn taken" onclick="S.modal={t:'taken',id:'${c.id}'};renderModal()">سُبقت إليه</button>`
+            :av===0||queueBlocked?`<button class="startbtn taken" onclick="S.modal={t:'taken',id:'${c.id}'};renderModal()">${queueBlocked?'بانتظار الدور':'سُبقت إليه'}</button>`
             :`<button class="startbtn" onclick="startCourse('${c.id}')">ابدأ${type==='read'?' قراءته':' سماعه'}</button>`}
        </div></div></article>`}).join('')}</div>`
     :'<div class="card empty">ما أُضيفت مقررات هنا بعد.</div>'}</div>`};
- const mine=list.filter(c=>onShelf(S.me.code,c.id)).length;
+ const mine=list.filter(c=>onOpenShelf(S.me.code,c.id)).length;
  return `<button class="back" onclick="go('today')">→ رجوع</button>
   <div class="sec-title stagger"><div>
     <p class="eyebrow">اختر ما تبدأ فيه — تقدر تغيّره متى ما بغيت</p>
@@ -1303,6 +1320,8 @@ let FILTER='all';
 function setFilter(f){FILTER=f;lastKey='';renderShell()}
 function rateOf(s,d){const x=dayOf(s.code,d);
  return Math.round((pct(x.p,s.goalP)+pct(x.m,s.goalM))/2)}
+function achievementRate(s,days){const n=days||7;return memo('avg|'+n+'|'+s.code,()=>{
+ let t=0;for(let k=0;k<n;k++)t+=rateOf(s,dayISO(k));return Math.round(t/n)})}
 function metGoal(s,d){if(!s)return false;const x=dayOf(s.code,d);
  return x.p>=s.goalP&&x.m>=s.goalM}
 function streakOf(c){return memo('st'+c,()=>_streak(c))}
@@ -1405,7 +1424,7 @@ function miniBars(s){const W=240,H=46,bw=W/7-6;
 function scard(s,i){
  const st=statusOf(s),r=rateOf(s,todayISO()),t=entriesOf(s.code,todayISO());
  const w=weekOf(s.code),C=2*Math.PI*20,str=streakOf(s.code);
- const open=(s.shelf||[]).length;
+ const open=openShelfOf(s.code).length;
  return `<button class="scard stagger" style="--i:${i};--sc:${st.c}" onclick="viewStudent('${s.code}')">
   <div class="head">
    <span class="avatar">${esc(s.name.trim()[0])}</span>
@@ -1425,19 +1444,17 @@ function scard(s,i){
 /* ---------- مقارنة المجموعات (للتنفيذي) ---------- */
 function groupsCard(i){
  const rows=SUPERVISORS.map(v=>{const my=STUDENTS.filter(s=>s.supervisor===v.code);
-  const wk=my.flatMap(s=>weekOf(s.code));
-  return{v,my,p:sum(wk,'pages'),m:sum(wk,'minutes'),t:sum(wk,'pages')+sum(wk,'minutes')}})
-  .sort((a,b)=>b.t-a.t);
- const mx=Math.max(1,...rows.map(r=>r.t));
+  const avg=my.length?Math.round(my.reduce((t,s)=>t+achievementRate(s,7),0)/my.length):0;
+  return{v,my,avg}}).sort((a,b)=>b.avg-a.avg||a.v.group.localeCompare(b.v.group,'ar'));
+ const programAvg=STUDENTS.length?Math.round(STUDENTS.reduce((t,s)=>t+achievementRate(s,7),0)/STUDENTS.length):0;
  return `<div class="card stagger" style="--i:${i}">
-  <p class="eyebrow">مجموع الأسبوع لكل مجموعة</p><h2>مقارنة المجموعات</h2>
+  <p class="eyebrow">متوسط نسبة تحقيق المقدار خلال آخر ٧ أيام</p><h2>مقارنة المجموعات</h2>
   ${rows.map(r=>`<div class="grow">
     <span class="gl2">${r.v.group}<div style="font-size:11.5px;color:var(--muted)">${esc(r.v.name)}</div></span>
-    <span class="gbar"><i class="p1" data-w="${Math.round(r.p/mx*100)}"></i><i class="p2" data-w="${Math.round(r.m/mx*100)}"></i></span>
-    <span class="gval">${r.p}ص · ${r.m}د</span></div>`).join('')}
-  <div class="keyrow"><span><i style="background:var(--teal)"></i>صفحات</span>
-   <span><i style="background:var(--gold)"></i>دقائق</span>
-   <span style="margin-right:auto">متوسط الطالب: <span class="num">${Math.round(rows.reduce((t,r)=>t+r.t,0)/Math.max(1,STUDENTS.length))}</span></span></div></div>`}
+    <span class="gbar"><i class="p1" data-w="${r.avg}"></i></span>
+    <span class="gval">${r.avg}%</span></div>`).join('')}
+  <div class="keyrow"><span><i style="background:var(--teal)"></i>تحقيق المقدار</span>
+   <span style="margin-right:auto">متوسط البرنامج: <span class="num">${programAvg}%</span></span></div></div>`}
 
 /* ---------- الشاشة الرئيسية للمشرف ---------- */
 function studentsView(){
@@ -1480,7 +1497,10 @@ function detailView(){
   return{f,p:sum(e,'pages'),m:sum(e,'minutes')}});
  const mx=Math.max(1,...byF.map(x=>x.p+x.m));
  const w=weekOf(s.code),st=statusOf(s);
- const rank=STUDENTS.map(x=>({c:x.code,t:totalOf(x.code)})).sort((a,b)=>b.t-a.t).findIndex(x=>x.c===s.code)+1;
+ const rank=LEADERBOARD.length?LEADERBOARD.findIndex(x=>x.public_code===s.code)+1:
+  STUDENTS.slice().sort((a,b)=>achievementRate(b,7)-achievementRate(a,7)
+   ||rateOf(b,todayISO())-rateOf(a,todayISO())||streakOf(b.code)-streakOf(a.code)
+   ||a.name.localeCompare(b.name,'ar')).findIndex(x=>x.code===s.code)+1;
  return `<button class="back" onclick="S.student=null;renderShell()">→ رجوع للوحة</button>
  <div class="hero stagger"><div class="htop">
    <div style="display:flex;align-items:center;gap:14px">
@@ -1510,7 +1530,7 @@ function detailView(){
     <button class="btn sm ${GOALS_OPEN?'outline':''}" onclick="toggleGoals()">${GOALS_OPEN?'أغلق نافذة المقدار':'افتح نافذة المقدار'}</button>`
     :'<span class="chip">نافذة المقدار من صلاحية المشرف التنفيذي</span>'}</div></div>
  <div class="card stagger" style="--i:1;margin-bottom:14px"><p class="eyebrow">اختياره الحالي</p><h2>مقرراته المفتوحة</h2>
-  <div class="shelfchips">${(s.shelf||[]).map(courseById).filter(Boolean).map(c=>{const f=fieldById(c.field);
+  <div class="shelfchips">${openShelfOf(s.code).map(courseById).filter(Boolean).map(c=>{const f=fieldById(c.field);
    const dn=courseProgress(s.code,c);
    return `<span class="tlitem" style="--fc:${f.c}"><span class="dot" style="background:${f.c}"></span>
     ${esc(c.title)} <span class="num">${pct(dn,c.total)}%</span></span>`}).join('')||'<span class="empty" style="padding:6px">ما اختار مقررات بعد.</span>'}</div></div>
@@ -1605,7 +1625,8 @@ function chalOn(){return !!(CHALLENGE&&CHALLENGE.active)}
 function chalEnded(){return chalOn()&&CHALLENGE.end<todayISO()}
 function chalLive(){return chalOn()&&!chalEnded()}
 function inChal(d){return d>=CHALLENGE.start&&d<=CHALLENGE.end}
-function chalProgress(code){return chalOn()?memo('ch'+CH_V+'|'+code,()=>_chal(code)):0}
+function chalProgress(code){if(!chalOn())return 0;const r=CHAL_BOARD.find(x=>x.public_code===code);
+ return r?+r.progress:memo('ch'+CH_V+'|'+code,()=>_chal(code))}
 function _chal(code){
  const st=studentByCode(code),es=entriesOf(code).filter(e=>inChal(e.date));
  if(CHALLENGE.metric==='pages')return sum(es,'pages');
@@ -1618,8 +1639,11 @@ function eachDay(a,b){const out=[];if(!a||!b||b<a)return out;
  while(d<=e){out.push(d.toISOString().slice(0,10));d.setUTCDate(d.getUTCDate()+1)}return out}
 function chalDaysLeft(){return eachDay(todayISO(),CHALLENGE.end).length}
 function chalRank(code){const v=chalProgress(code);
- return 1+STUDENTS.reduce((n,x)=>n+(chalProgress(x.code)>v?1:0),0)}
-function chalWinners(list){return list.filter(s=>chalProgress(s.code)>=CHALLENGE.target)}
+ const r=CHAL_BOARD.find(x=>x.public_code===code);return r?+r.rank:
+  1+STUDENTS.reduce((n,x)=>n+(chalProgress(x.code)>v?1:0),0)}
+function chalWinners(list){if(CHAL_BOARD.length&&list===STUDENTS)return CHAL_BOARD
+ .filter(x=>+x.progress>=CHALLENGE.target).map(x=>studentByCode(x.public_code)).filter(Boolean);
+ return list.filter(s=>chalProgress(s.code)>=CHALLENGE.target)}
 function chalCardStudent(i){
  if(!chalOn())return '';
  const v=chalProgress(S.me.code),t=CHALLENGE.target,pc=pct(v,t),done=v>=t;
@@ -1724,7 +1748,8 @@ function chalCardStudentAdmin(){
 function openChal(edit){S.modal={t:'chal',metric:CHALLENGE.metric,editing:!!edit&&chalOn(),
  ti_:edit?CHALLENGE.title:'',de_:edit?CHALLENGE.desc:'',tg_:edit?CHALLENGE.target:100,
  dy_:edit?chalDuration():7};renderModal()}
-function endChal(){CHALLENGE.active=false;chalTouch();lastKey='';renderShell();
+function endChal(){if(REMOTE)return remoteCommand('end_challenge',{},'أُنهي التحدي.');
+ CHALLENGE.active=false;chalTouch();lastKey='';renderShell();
  toast('أُرشف التحدي — لم يعد يظهر للطلاب.')}
 function keepChalForm(){const g=i=>document.getElementById(i);
  if(g('chtitle'))S.modal.ti_=g('chtitle').value; if(g('chdesc'))S.modal.de_=g('chdesc').value;
@@ -1738,6 +1763,8 @@ function saveChal(){const ti=$('#chtitle').value.trim();if(!ti){$('#chtitle').fo
  if(S.modal.metric==='days'&&(+$('#chtarget').value||0)>days){
   $('#chtarget').focus();return toast('أيام المواظبة المطلوبة لا تتجاوز مدة التحدي ('+days+' يوم).')}
  const editing=S.modal.editing;                      /* تعديل تحدٍ جارٍ: لا نمسّ تاريخ بدايته */
+ if(REMOTE)return remoteCommand('save_challenge',{title:ti,description:$('#chdesc').value.trim(),
+  metric:S.modal.metric,target:Math.max(1,+$('#chtarget').value||50),days,editing},editing?'حُدّث التحدي.':'انطلق التحدي.');
  const start=editing?CHALLENGE.start:todayISO();
  const end=eachDay(start,dayISO(0)).length?addDays(start,days-1):addDays(start,days-1);
  CHALLENGE={active:true,title:ti,desc:$('#chdesc').value.trim(),metric:S.modal.metric,
@@ -1764,10 +1791,12 @@ function groupsPanel(i){
    </div>`}).join('')}</div>`}
 function openMove(code){S.modal={t:'move',code};renderModal()}
 function openRename(sup){S.modal={t:'rename',sup};renderModal()}
-function moveStudent(code,sup){const st=studentByCode(code),v=SUPERVISORS.find(x=>x.code===sup);
+function moveStudent(code,sup){if(REMOTE)return remoteCommand('move_student',{public_code:code,supervisor_code:sup},'نُقل الطالب.');
+ const st=studentByCode(code),v=SUPERVISORS.find(x=>x.code===sup);
  st.supervisor=sup;st.group=v.group;S.modal=null;renderModal();lastKey='';renderShell();
  toast(st.name+' انتقل إلى '+v.group)}
 function renameGroup(sup){const n=$('#gname').value.trim();if(!n){$('#gname').focus();return}
+ if(REMOTE)return remoteCommand('rename_group',{supervisor_code:sup,group_name:n},'تحدّث اسم المجموعة.');
  const v=SUPERVISORS.find(x=>x.code===sup),old=v.group;
  STUDENTS.forEach(s=>{if(s.supervisor===sup)s.group=n});v.group=n;
  S.modal=null;renderModal();lastKey='';renderShell();toast('«'+old+'» صارت «'+n+'»')}
@@ -1789,25 +1818,25 @@ function lastTouchFor(code,c){const e=entriesOf(code).filter(x=>x.course===c.id)
  return k===0?'سجّل اليوم':k===1?'آخر تسجيل أمس':'آخر تسجيل قبل '+k+' أيام'}
 function shelvesView(){
  const list=myStudents();
- const open=list.reduce((t,s)=>t+(s.shelf||[]).length,0);
- const noShelf=list.filter(s=>!(s.shelf||[]).length);
- const over=list.filter(s=>(s.shelf||[]).length>3);
+ const open=list.reduce((t,s)=>t+openShelfOf(s.code).length,0);
+ const noShelf=list.filter(s=>!openShelfOf(s.code).length);
+ const over=list.filter(s=>openShelfOf(s.code).length>3);
  const fins=list.reduce((t,s)=>t+COURSES.filter(c=>courseProgress(s.code,c)>=c.total).length,0);
  const head=`${statStrip([
    {lab:'مقررات مفتوحة',val:open,sub:'مقرر'},
    {lab:'متوسط لكل طالب',val:Math.round(open/Math.max(1,list.length)*10)/10,sub:'مقرر',c:'var(--gold)'},
-   {lab:'بلا اختيار',val:noShelf.length,sub:'طالب',c:noShelf.length?'var(--rose)':'var(--muted)'},
+   {lab:'بلا مقرر مفتوح',val:noShelf.length,sub:'طالب',c:noShelf.length?'var(--rose)':'var(--muted)'},
    {lab:'ختمات',val:fins,sub:'مقرر مكتمل',c:'var(--teal)'}])}
  ${noShelf.length?`<div class="alert stagger" style="--i:4">
    <svg viewBox="0 0 24 24"><path d="M12 8v5M12 17h.01M10.3 3.9L2.4 18a2 2 0 001.7 3h15.8a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
-   <span><b>${noShelf.length}</b> ${noShelf.length===1?'طالب ما اختار':'طلاب ما اختاروا'} أي مقرر بعد: ${noShelf.map(s=>esc(s.name)).join('، ')}</span></div>`:''}
+   <span><b>${noShelf.length}</b> ${noShelf.length===1?'طالب بلا مقرر مفتوح':'طلاب بلا مقرر مفتوح'} الآن: ${noShelf.map(s=>esc(s.name)).join('، ')}</span></div>`:''}
  ${over.length?`<div class="nudge stagger" style="--i:5">💡 ${over.length} ${over.length===1?'طالب فاتح':'طلاب فاتحين'} أكثر من ٣ مقررات — يحتاجون توجيه للتركيز.</div>`:''}
  <div class="toolbar stagger" style="--i:6">
    <button class="filter" aria-pressed="${SHMODE==='student'}" onclick="setShMode('student')">حسب الطالب <span class="cnt">${list.length}</span></button>
    <button class="filter" aria-pressed="${SHMODE==='course'}" onclick="setShMode('course')">حسب المقرر <span class="cnt">${COURSES.length}</span></button>
  </div>`;
  if(SHMODE==='course'){
-  const rows=COURSES.map(c=>({c,st:list.filter(s=>(s.shelf||[]).indexOf(c.id)>-1)}))
+  const rows=COURSES.map(c=>({c,st:list.filter(s=>onOpenShelf(s.code,c.id))}))
    .sort((a,b)=>b.st.length-a.st.length);
   return head+`<div class="stagger" style="--i:7">${rows.map(r=>{const f=fieldById(r.c.field);
     const fin=list.filter(s=>courseProgress(s.code,r.c)>=r.c.total).length;
@@ -1819,10 +1848,10 @@ function shelvesView(){
      ${r.st.length?`<div class="follow">${r.st.map(s=>{const dn=courseProgress(s.code,r.c);
        return `<span class="fchip" style="--c:${f.c}" onclick="viewStudent('${s.code}')" title="${esc(s.name)}">
         <span class="fav">${esc(s.name.trim()[0])}</span>${esc(s.name)} <span class="num">${pct(dn,r.c.total)}%</span></span>`}).join('')}</div>`
-      :`<div class="shempty">ما اختاره أي طالب في ${S.role==='admin'?'البرنامج':'مجموعتك'} بعد.</div>`}
-    </div>`}).join('')}</div>`}
+      :`<div class="shempty">لا يتابعه أي طالب حاليًا في ${S.role==='admin'?'البرنامج':'مجموعتك'}.</div>`}
+ </div>`}).join('')}</div>`}
  return head+`<div class="shcards">${list.map((s,i)=>{
-   const sh=(s.shelf||[]).map(courseById).filter(Boolean);
+   const sh=openShelfOf(s.code).map(courseById).filter(Boolean);
    const st=statusOf(s),fin=COURSES.filter(c=>courseProgress(s.code,c)>=c.total).length;
    return `<div class="shcard stagger" style="--i:${7+i}">
     <div class="shhead">
@@ -1830,7 +1859,7 @@ function shelvesView(){
      <span class="nmx"><b>${esc(s.name)}</b><span>${s.group} · <span class="num">${s.code}</span></span></span>
      <span class="chip">${sh.length?`<span class="num">${sh.length}</span> مفتوح`:'رفّ فارغ'}</span></div>
     ${sh.length?sh.map(c=>shelfRow(s,c)).join('')
-     :`<div class="shempty">📚 ما اختار أي مقرر بعد — يحتاج توجيه للبدء.</div>`}
+     :`<div class="shempty">📚 ما عنده مقرر مفتوح الآن — ختماته وإنجازه السابق محفوظة.</div>`}
     <div class="shfoot"><span>${fin?`✓ ختم <span class="num" style="color:var(--teal)">${fin}</span> مقرر`:'ما ختم شيئًا بعد'}</span>
      <button class="btn sm outline" onclick="viewStudent('${s.code}')">صفحته</button></div>
    </div>`}).join('')}</div>`}
@@ -1841,13 +1870,13 @@ function avatarLetter(n){const w=String(n).replace('أ. ','').trim().split(/\s+/
  if(t.length>2&&t.slice(0,2)==='ال')t=t.slice(2);
  return t[0]}
 function peopleView(){
- const wkAll=STUDENTS.flatMap(s=>weekOf(s.code));
+ const avg7=STUDENTS.length?Math.round(STUDENTS.reduce((t,s)=>t+achievementRate(s,7),0)/STUDENTS.length):0;
  return `<div class="hero stagger"><div class="htop">
    <div><p class="hlab">إدارة الفريق</p><h2>فريق الإشراف</h2></div>
    <div class="hstats">
     <div class="hstat"><div class="hk">مشرفون</div><div class="hv tealv"><span class="num" data-to="${SUPERVISORS.length}">0</span></div></div>
     <div class="hstat"><div class="hk">طلاب</div><div class="hv"><span class="num" data-to="${STUDENTS.length}">0</span></div></div>
-    <div class="hstat"><div class="hk">إنجاز الأسبوع</div><div class="hv goldv"><span class="num" data-to="${sum(wkAll,'pages')+sum(wkAll,'minutes')}">0</span> <small>نقطة</small></div></div>
+    <div class="hstat"><div class="hk">تحقيق المقدار · ٧ أيام</div><div class="hv goldv"><span class="num" data-to="${avg7}" data-suffix="%">0%</span></div></div>
    </div></div></div>
  ${groupsCard(1)}
  ${groupsPanel(2)}
@@ -1875,17 +1904,16 @@ function peopleView(){
 
 /* ---------- المقررات ---------- */
 function coursesView(){
- const adopt=COURSES.map(c=>({c,n:STUDENTS.filter(s=>(s.shelf||[]).indexOf(c.id)>-1).length,
-   fin:STUDENTS.filter(s=>courseProgress(s.code,c)>=c.total).length,
-   vol:STUDENTS.reduce((t,s)=>t+courseProgress(s.code,c),0)}))
-  .sort((a,b)=>b.n-a.n||b.vol-a.vol);
+ const adopt=COURSES.map(c=>({c,n:STUDENTS.filter(s=>onOpenShelf(s.code,c.id)).length,
+   fin:STUDENTS.filter(s=>courseProgress(s.code,c)>=c.total).length}))
+  .sort((a,b)=>b.n-a.n||b.fin-a.fin||a.c.title.localeCompare(b.c.title,'ar'));
  const mx=Math.max(1,...adopt.map(a=>a.n));
  const top=adopt.slice(0,6);
  return `<div class="hero stagger"><div class="htop">
    <div><p class="hlab">مكتبة البرنامج</p><h2>المقررات</h2></div>
    <div class="hstats">
     <div class="hstat"><div class="hk">مقررات</div><div class="hv tealv"><span class="num" data-to="${COURSES.length}">0</span></div></div>
-    <div class="hstat"><div class="hk">اختيارات مفتوحة</div><div class="hv"><span class="num" data-to="${STUDENTS.reduce((t,s)=>t+(s.shelf||[]).length,0)}">0</span></div></div>
+    <div class="hstat"><div class="hk">اختيارات مفتوحة</div><div class="hv"><span class="num" data-to="${STUDENTS.reduce((t,s)=>t+openShelfOf(s.code).length,0)}">0</span></div></div>
     <div class="hstat"><div class="hk">ختمات</div><div class="hv goldv"><span class="num" data-to="${adopt.reduce((t,a)=>t+a.fin,0)}">0</span></div></div>
    </div></div></div>
  <div class="card stagger" style="--i:1;margin-bottom:14px">
@@ -1904,7 +1932,7 @@ function coursesView(){
    return `<div class="fcol stagger" style="--c:${f.c};--i:${2+i}">
     <div class="fhead"><h3>${f.name}</h3>
      <span class="chip"><span class="num">${rd}</span> قرائي · <span class="num">${cs.length-rd}</span> سماعي</span></div>
-    ${cs.length?cs.map(c=>{const n=STUDENTS.filter(s=>(s.shelf||[]).indexOf(c.id)>-1).length;
+    ${cs.length?cs.map(c=>{const n=STUDENTS.filter(s=>onOpenShelf(s.code,c.id)).length;
       return `<div class="course"><span class="ic" style="background:#F2F4F1">
        ${c.type==='read'?'<svg viewBox="0 0 24 24" style="stroke:'+f.c+'"><path d="M4 5h7v15H4zM20 5h-7v15h7z"/></svg>'
         :'<svg viewBox="0 0 24 24" style="stroke:'+f.c+'"><path d="M4 14v-2a8 8 0 0116 0v2M4 14h3v5H4zM17 14h3v5h-3z"/></svg>'}</span>
@@ -1928,9 +1956,11 @@ function coursesView(){
 function openEdit(eid){S.modal={t:'edit',eid};renderModal()}
 function saveEdit(){const e=ENTRIES.find(x=>x.id===S.modal.eid);if(!e)return closeModal();
  const v=parseInt($('#ev').value,10);if(!v||v<1){$('#ev').focus();return}
+ if(REMOTE)return remoteCommand('save_edit',{entry_id:e.id,value:v},'صُحّح التسجيل.');
  if(e.pages)e.pages=v;else e.minutes=v;
  reindex();S.modal=null;renderModal();lastKey='';renderShell();toast('صُحّح التسجيل.')}
 function delEntry(eid){const e=ENTRIES.find(x=>x.id===eid);if(!e)return;
+ if(REMOTE)return remoteCommand('delete_entry',{entry_id:eid},'حُذف التسجيل.');
  ENTRIES=ENTRIES.filter(x=>x.id!==eid);reindex();
  S.modal=null;renderModal();lastKey='';renderShell();toast('حُذف التسجيل.')}
 function openLog(id){
@@ -2090,12 +2120,14 @@ function modalHTML(){
    <div class="row"><button class="btn outline" onclick="delEntry('${e.id}')">حذف التسجيل</button>
    <button class="btn" onclick="saveEdit()">حفظ التصحيح</button></div>`}}
  if(m.t==='taken'){const c=courseById(m.id),w=waitList(m.id),pos=waitPos(m.id,S.me.code);
-  const holders=STUDENTS.filter(x=>(x.shelf||[]).indexOf(m.id)>-1).length;
-  b=`<h3>الكتاب سُبقت إليه!</h3>
-   <p class="sub">كل نسخ «${esc(c.title)}» بيد طلاب آخرين الآن.</p>
+  const holders=heldCount(m.id),av=availOf(c),queueBlocked=av>0&&!canClaimCopy(c,S.me.code);
+  b=`<h3>${queueBlocked?'الدور لأصحاب الانتظار':'الكتاب سُبقت إليه!'}</h3>
+   <p class="sub">${queueBlocked?`النسخ المتاحة من «${esc(c.title)}» محفوظة لمن سبقوك في القائمة.`
+    :`كل نسخ «${esc(c.title)}» محجوزة لطلاب آخرين الآن.`}</p>
    <div class="takenbox">
     <div class="tkline"><span>النسخ المتوفرة في البرنامج</span><b class="num">${c.copies}</b></div>
-    <div class="tkline"><span>بيد طلاب الآن</span><b class="num">${holders}</b></div>
+    <div class="tkline"><span>محجوزة أو بيد طلاب</span><b class="num">${holders}</b></div>
+    <div class="tkline"><span>المتاح فعليًا الآن</span><b class="num">${av}</b></div>
     <div class="tkline"><span>في قائمة الانتظار</span><b class="num">${w.length}</b></div>
    </div>
    ${pos?`<p style="font-size:13px;color:var(--teal);background:var(--teal-soft);border-radius:11px;padding:11px 14px;margin-top:14px">
@@ -2124,6 +2156,8 @@ function savePersonal(){
  const rd=S.modal&&S.modal.type==='read',t=$('#pt').value.trim(),n=parseInt($('#pn').value,10);
  if(!t){$('#pt').focus();return}
  if(!n||n<1||n>100000){$('#pn').focus();return toast(rd?'أدخل عدد صفحات صحيحًا.':'أدخل مدة صحيحة بالدقائق.')}
+ if(REMOTE)return remoteCommand('save_personal',{course_type:rd?'read':'listen',title:t,
+  author:$('#pb').value.trim()||'اختيار شخصي',total:n},'أُضيف لرفّك: '+t);
  const id='p'+S.me.code+'_'+Date.now().toString(36);
  PERSONAL_COURSES.push({id,owner:S.me.code,personal:true,field:'personal',type:rd?'read':'listen',
   title:t,by:$('#pb').value.trim()||'اختيار شخصي',total:n,note:'اختيار شخصي خارج مقررات البرنامج'});
@@ -2131,13 +2165,16 @@ function savePersonal(){
  toast('أُضيف لرفّك: '+t)}
 function saveLog(){const v=parseInt($('#mv').value,10),c=courseById(S.modal.course);
  if(!v||v<=0){$('#mv').focus();return}
+ if(REMOTE)return remoteCommand('save_entry',{course_id:c.id,value:v},'انحفظ إنجازك. خطوة زيادة اليوم.');
  ENTRIES.push({id:newEid(),code:S.me.code,date:todayISO(),course:c.id,
   pages:c.type==='read'?v:0,minutes:c.type==='listen'?v:0});
  reindex();S.modal=null;renderModal();lastKey='';renderShell();
  toast(courseProgress(S.me.code,c)>=c.total?'ما شاء الله — ختمت '+c.title+'!':'انحفظ إنجازك. خطوة زيادة اليوم.')}
 function saveGoal(){if(!canEditGoal(S.me)){closeModal();return toast('المقدار مقفل — يُفتح بداية الأسبوع.')}
+ if(REMOTE)return remoteCommand('save_goal',{goal_pages:+$('#gp').value,goal_minutes:+$('#gm').value},'تحدّث هدفك اليومي.');
  S.me.goalSet=true;S.me.goalP=Math.max(0,parseInt($('#gp').value,10)||0);
  S.me.goalM=Math.max(0,parseInt($('#gm').value,10)||0);
+ MEMO={};
  S.modal=null;renderModal();lastKey='';renderShell();toast('تحدّث هدفك اليومي.')}
 function keepCourseForm(){const g=i=>document.getElementById(i);
  if(g('ct'))S.modal.t_=g('ct').value; if(g('cb'))S.modal.b_=g('cb').value;
@@ -2147,6 +2184,8 @@ function saveCourse(){const t=$('#ct').value.trim(),n=parseInt($('#cn').value,10
  if(!t){$('#ct').focus();return}
  if(!n||n<1){$('#cn').focus();return toast(S.modal.type==='read'?'أدخل عدد صفحات الكتاب.':'أدخل عدد دقائق المقرر.')}
  const cpEl=$('#cc'),cp=cpEl&&cpEl.value.trim()!==''?Math.max(0,parseInt(cpEl.value,10)||0):null;
+ if(REMOTE)return remoteCommand('save_course',{title:t,author:$('#cb').value.trim()||'—',field_id:$('#cf').value,
+  course_type:S.modal.type,total:n,note:$('#cd').value.trim(),copies:S.modal.type==='read'?cp:null},'أُضيف المقرر.');
  COURSES.push({id:'c'+(Date.now().toString(36)),field:$('#cf').value,type:S.modal.type,title:t,
   by:$('#cb').value.trim()||'—',total:n,note:$('#cd').value.trim(),
   copies:S.modal.type==='read'?cp:null});
@@ -2157,6 +2196,8 @@ function newCode(){let c;do{c=String(Math.floor(1000+Math.random()*9000))}
  while(studentByCode(c)||SUPERVISORS.find(s=>s.code===c)||c===ADMIN.code);return c}
 function savePerson(k){const n=$('#nn').value.trim();if(!n){$('#nn').focus();return}
  const g=$('#ng').value.trim()||'—',code=newCode();
+ if(REMOTE)return remoteCommand('create_person',{kind:k,name:n,group_name:g,
+  supervisor_code:k==='student'?$('#nsv').value:null},'تمت الإضافة.');
  if(k==='student')STUDENTS.push({code,name:n,group:SUPERVISORS.find(v=>v.code===$('#nsv').value).group,supervisor:$('#nsv').value,goalP:20,goalM:30,shelf:[],goalSet:false});
  else SUPERVISORS.push({code,name:n,group:g});
  S.modal=null;renderModal();lastKey='';renderShell();toast('تمت الإضافة. الرمز: '+code)}
@@ -2237,7 +2278,7 @@ document.addEventListener('keydown',e=>{
  if(!S.role){if(/^[0-9]$/.test(e.key))tap(null,e.key);
   else if(e.key==='Backspace')tap(null,'back');else if(e.key==='Enter')login();return}
  if(e.key==='Escape')closeModal()});
-drawLogin();
+initRemote();
 </script>
 </body>
 </html>
