@@ -737,6 +737,7 @@ let COURSES=[];
 let ARCHIVED_COURSES=[];
 let STUDENTS=[];
 let SUPERVISORS=[];
+let OBSERVERS=[];
 let CHALLENGE={active:false,title:'',desc:'',metric:'pages',target:1,start:null,end:null};
 let ADMIN={code:'',name:''};
 const TZ=3;        /* الرياض UTC+3 */
@@ -820,6 +821,7 @@ function hydrateRemote(state){
  STUDENTS=ps.filter(x=>x.role==='student').map(x=>({code:x.public_code,name:x.name,group:x.group_name||'—',
   supervisor:x.supervisor_code||'',goalP:+x.goal_pages,goalM:+x.goal_minutes,goalSet:!!x.goal_set,shelf:[]}));
  SUPERVISORS=ps.filter(x=>x.role==='supervisor').map(x=>({code:x.public_code,name:x.name,group:x.group_name||'—'}));
+ OBSERVERS=ps.filter(x=>x.role==='observer').map(x=>({code:x.public_code,name:x.name}));
  const ad=ps.find(x=>x.role==='admin');ADMIN=ad?{code:ad.public_code,name:ad.name}:{code:'',name:'مشرف تنفيذي'};
  for(const x of shelves){const st=studentByCode(x.public_code);if(st)st.shelf.push(x.course_id)}
  COURSES=[];ARCHIVED_COURSES=[];PERSONAL_COURSES=[];
@@ -843,7 +845,8 @@ async function remoteCommand(command,payload,success){
  if(remoteCommand.busy)return;remoteCommand.busy=true;
  try{const code=S.me&&S.me.code,role=S.role,view=S.view,field=S.field,student=S.student;
   const {data,error}=await SB.rpc('app_command',{p_command:command,p_payload:payload||{}});if(error)throw error;
-  const p=hydrateRemote(data.state),me=role==='student'?studentByCode(code):role==='supervisor'?SUPERVISORS.find(x=>x.code===code):ADMIN;
+  const p=hydrateRemote(data.state),me=role==='student'?studentByCode(code):role==='supervisor'?SUPERVISORS.find(x=>x.code===code)
+   :role==='observer'?OBSERVERS.find(x=>x.code===code):ADMIN;
   S={...S,role,me,view,field,student,modal:null};renderModal();lastKey='';renderShell();toast(data.message||success||'تم الحفظ.');return data.result
  }catch(e){toast(e.message||'تعذّر الحفظ. حاول مرة أخرى.')}finally{remoteCommand.busy=false}}
 async function initRemote(){
@@ -904,7 +907,8 @@ async function login(){
  try{const {data,error}=await SB.rpc('claim_access_code',{p_code:v});if(error)throw error;
   if(data?.error)throw new Error(data.error);
   const p=hydrateRemote(data.state);role=p.role;me=role==='student'?studentByCode(p.public_code)
-   :role==='supervisor'?SUPERVISORS.find(x=>x.code===p.public_code):ADMIN;view=role==='student'?'today':'students'
+   :role==='supervisor'?SUPERVISORS.find(x=>x.code===p.public_code)
+   :role==='observer'?OBSERVERS.find(x=>x.code===p.public_code):ADMIN;view=role==='student'?'today':'students'
  }catch(e){login.busy=false;const m=e.message||'';return loginError(m.includes('max_devices')?'بلغت الحد المسموح للأجهزة. راجع المشرف التنفيذي.':m.includes('too_many_attempts')?'محاولات كثيرة. انتظر 15 دقيقة ثم حاول مجددًا.':'الرمز غير صحيح أو غير مفعّل.');}
  const card=$('#lcard'); if(card&&!reduced){card.classList.add('leaving');}
  setTimeout(()=>{S={...S,role,me,view,buf:'',field:null,student:null};lastKey='';renderShell();login.busy=false},reduced?0:340);
@@ -914,7 +918,7 @@ function logout(){const m=shell().querySelector('main');if(m&&!reduced)m.style.o
 
 /* ==================== الهيكل ==================== */
 function topbar(){
- const rn={student:'طالب',supervisor:'مشرف',admin:'مشرف تنفيذي'}[S.role];
+ const rn={student:'طالب',supervisor:'مشرف',observer:'مشرف متابع',admin:'مشرف تنفيذي'}[S.role];
  return `<header class="topbar"><div class="wrap">
   <div class="brand"><svg viewBox="0 0 46 40" aria-hidden="true">
     <rect class="s2" x="30" y="26" width="14" height="12" rx="2.5" fill="#EEF0EC" opacity=".32"/>
@@ -1047,6 +1051,7 @@ function bookCard(c,i){
        <div class="bar"><i data-w="${p}" style="background:${f.c}"></i></div>
        <p class="blast">${fin?'أتممته كاملًا — بارك الله فيك.':lastTouch(S.me.code,c)+' · باقي '+Math.max(0,c.total-dn)+' '+unit}</p>
        <div class="bactions">
+        ${!read&&c.url?`<a class="btn sm media-link" style="flex:1;background:${f.c}" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">فتح المقطع ↗</a>`:''}
         ${fin?`<button class="btn sm outline" style="flex:1;border-color:${f.c};color:${f.c}" onclick="stopCourse('${c.id}')">${isPhysical(c)?'أعدت الكتاب':'انقله للمكتملة'}</button>`
              :`<button class="btn sm outline" style="flex:1;border-color:${f.c};color:${f.c}" onclick="openLog('${c.id}')">${read?'سجّل قراءة':'سجّل سماع'}</button>
                <button class="iconbtn" title="إيقاف المتابعة" onclick="stopCourse('${c.id}')">✕</button>`}
@@ -1343,7 +1348,7 @@ function statusOf(s){const r=rateOf(s,todayISO()),idl=idleDays(s.code);
  if(r>0)return{k:'mid',t:'في الطريق',c:'var(--gold)'};
  return{k:'mid',t:'ما سجّل اليوم',c:'var(--gold)'}}
 function heatColor(r){return r>=100?'var(--teal)':r>=60?'#3E8B82':r>=30?'#7FB8B1':r>0?'#B9D6D1':'#EAEDE8'}
-function myStudents(){return S.role==='admin'?STUDENTS:STUDENTS.filter(s=>s.supervisor===S.me.code)}
+function myStudents(){return S.role==='admin'||S.role==='observer'?STUDENTS:STUDENTS.filter(s=>s.supervisor===S.me.code)}
 function statStrip(items){return `<div class="stat-strip">${items.map((x,i)=>
  `<div class="stat stagger" style="--i:${i};--sc:${x.c||'var(--teal)'}">
    <div class="lab">${x.lab}</div>
@@ -1379,7 +1384,7 @@ function heroPanel(){
  return `<div class="hero stagger">
   <div class="htop">
    <div><p class="hlab">${greet} · ${dayLabel(today)} <span class="num">${today}</span></p>
-    <h2>${S.role==='admin'?'نبض البرنامج':'نبض '+S.me.group}</h2></div>
+    <h2>${S.role==='admin'||S.role==='observer'?'نبض البرنامج':'نبض '+S.me.group}</h2></div>
    <div class="hstats">
     <div class="hstat"><div class="hk">متوسط الإنجاز اليوم</div>
       <div class="hv goldv"><span class="num" data-to="${avg}" data-suffix="%">0%</span></div></div>
@@ -1467,12 +1472,13 @@ function studentsView(){
  const sets={all,done,idle};
  const list=(sets[FILTER]||all).slice().sort((a,b)=>rateOf(b,today)-rateOf(a,today));
  return `${heroPanel()}
- ${S.role==='admin'?`<div class="goalwin stagger ${GOALS_OPEN?'open':''}" style="--i:1">
+ ${S.role==='admin'||S.role==='observer'?`<div class="goalwin stagger ${GOALS_OPEN?'open':''}" style="--i:1">
    <span class="gi2">${GOALS_OPEN?'🔓':'🔒'}</span>
    <div style="flex:1"><b>تغيير المقدار اليومي ${GOALS_OPEN?'مفتوح للجميع':'مغلق'}</b>
-    <p>${GOALS_OPEN?'الطلاب يقدرون يضبطون مقاديرهم الآن — أغلقها بعد ما يستقروا.'
-      :'المقادير مثبّتة. افتحها بداية الأسبوع ليضبط كل طالب مقداره، ثم أغلقها.'}</p></div>
-   <button class="btn sm ${GOALS_OPEN?'outline':''}" onclick="toggleGoals()">${GOALS_OPEN?'أغلق النافذة':'افتح للجميع'}</button>
+    <p>${GOALS_OPEN?(S.role==='admin'?'الطلاب يقدرون يضبطون مقاديرهم الآن — أغلقها بعد ما يستقروا.':'الطلاب يقدرون يضبطون مقاديرهم الآن.')
+      :(S.role==='admin'?'المقادير مثبّتة. افتحها بداية الأسبوع ليضبط كل طالب مقداره، ثم أغلقها.':'المقادير اليومية مثبّتة حاليًا.')}</p></div>
+   ${S.role==='admin'?`<button class="btn sm ${GOALS_OPEN?'outline':''}" onclick="toggleGoals()">${GOALS_OPEN?'أغلق النافذة':'افتح للجميع'}</button>`
+    :'<span class="chip">للاطلاع فقط</span>'}
   </div>`:''}
  ${idle.length?`<div class="alert stagger" style="--i:1">
    <svg viewBox="0 0 24 24"><path d="M12 8v5M12 17h.01M10.3 3.9L2.4 18a2 2 0 001.7 3h15.8a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
@@ -1482,7 +1488,7 @@ function studentsView(){
  ${S.role==='supervisor'?chalCardSupervisor(1):''}
  ${flagCard(all,2)}
  ${matrixCard(all,3)}
- ${S.role==='admin'?groupsCard(3):''}
+ ${S.role==='admin'||S.role==='observer'?groupsCard(3):''}
  <div class="sec-title stagger" style="--i:4"><h2>الطلاب</h2>
   ${S.role==='admin'?'<button class="btn sm" onclick="openAdd(\'student\')">+ إضافة طالب</button>':''}</div>
  <div class="toolbar stagger" style="--i:5">
@@ -1581,6 +1587,7 @@ function flagCard(list,i){const fl=flaggedEntries(list);if(!fl.length)return '';
 /* ---------- العهدة ---------- */
 function loansView(){
  const all=reqList();
+ const readOnly=S.role==='observer';
  const pend=all.filter(r=>r.st==='pending'),out=all.filter(r=>r.st==='out'),back=all.filter(r=>r.st==='back');
  const queues=Object.entries(WAIT).map(([id,codes])=>({c:courseById(id),codes}))
   .filter(x=>x.c&&x.codes.length).sort((a,b)=>a.c.title.localeCompare(b.c.title,'ar'));
@@ -1597,21 +1604,23 @@ function loansView(){
  return `<div class="hero stagger"><div class="htop">
    <div><p class="hlab">نسخ البرنامج الورقية</p><h2>العهدة والتسليم</h2></div>
    <div class="hstats">
-    <div class="hstat"><div class="hk">طلبات بانتظارك</div><div class="hv goldv"><span class="num" data-to="${pend.length}">0</span></div></div>
+    <div class="hstat"><div class="hk">${readOnly?'طلبات بانتظار التنفيذي':'طلبات بانتظارك'}</div><div class="hv goldv"><span class="num" data-to="${pend.length}">0</span></div></div>
     <div class="hstat"><div class="hk">نسخ بعهدة الطلاب</div><div class="hv tealv"><span class="num" data-to="${out.length}">0</span></div></div>
     <div class="hstat"><div class="hk">بانتظار الاستلام</div><div class="hv"><span class="num" data-to="${back.length}">0</span></div></div>
     <div class="hstat"><div class="hk">عهدة راكدة</div><div class="hv" style="color:#E8A0B0"><span class="num" data-to="${stale.length}">0</span></div></div>
    </div></div></div>
  <div class="card stagger" style="--i:1;margin-bottom:14px">
-  <p class="eyebrow">أكّد التسليم ليبدأ الطالب التسجيل</p><h2>طلبات استعارة (${pend.length})</h2>
-  <div style="margin-top:10px">${pend.length?pend.map(r=>row(r,
-    `<button class="btn sm" onclick="handOver('${r.code}','${r.id}')">سلّمته النسخة</button>
+  <p class="eyebrow">${readOnly?'بانتظار تأكيد التسليم من المشرف التنفيذي':'أكّد التسليم ليبدأ الطالب التسجيل'}</p><h2>طلبات استعارة (${pend.length})</h2>
+  <div style="margin-top:10px">${pend.length?pend.map(r=>row(r,readOnly
+    ?'<span class="avail wait">بانتظار التنفيذي</span>'
+    :`<button class="btn sm" onclick="handOver('${r.code}','${r.id}')">سلّمته النسخة</button>
      <button class="qbtn del" onclick="rejectReq('${r.code}','${r.id}')" title="إلغاء">✕</button>`)).join('')
    :'<div class="empty">ما فيه طلبات معلّقة.</div>'}</div></div>
  <div class="card stagger" style="--i:2;margin-bottom:14px">
-  <p class="eyebrow">أكّد الاستلام لتتحرر النسخة لغيره</p><h2>بانتظار استلام النسخة (${back.length})</h2>
-  <div style="margin-top:10px">${back.length?back.map(r=>row(r,
-    `<button class="btn sm" onclick="confirmReturn('${r.code}','${r.id}')">استلمت النسخة</button>`)).join('')
+  <p class="eyebrow">${readOnly?'بانتظار تأكيد الاستلام من المشرف التنفيذي':'أكّد الاستلام لتتحرر النسخة لغيره'}</p><h2>بانتظار استلام النسخة (${back.length})</h2>
+  <div style="margin-top:10px">${back.length?back.map(r=>row(r,readOnly
+    ?'<span class="avail wait">بانتظار التنفيذي</span>'
+    :`<button class="btn sm" onclick="confirmReturn('${r.code}','${r.id}')">استلمت النسخة</button>`)).join('')
    :'<div class="empty">ما فيه نسخ بانتظار الاستلام.</div>'}</div></div>
  <div class="card stagger" style="--i:3;margin-bottom:14px">
   <p class="eyebrow">الترتيب حسب وقت الانضمام — لا يمكن تجاوزه</p><h2>صفوف انتظار الكتب (${queues.length})</h2>
@@ -1628,8 +1637,9 @@ function loansView(){
    <span><b>${stale.length}</b> ${stale.length===1?'نسخة راكدة':'نسخ راكدة'} — مضى عليها أكثر من أسبوعين والطالب متوقف عن التسجيل.</span></div>`:''}
  <div class="card stagger" style="--i:5"><p class="eyebrow">من بيده نسخة الآن</p>
   <h2>النسخ بعهدة الطلاب (${out.length})</h2>
-  <div style="margin-top:10px">${out.length?out.sort((a,b)=>a.at.localeCompare(b.at)).map(r=>row(r,
-    `<button class="btn sm outline" onclick="confirmReturn('${r.code}','${r.id}')">استعدتها</button>`)).join('')
+  <div style="margin-top:10px">${out.length?out.sort((a,b)=>a.at.localeCompare(b.at)).map(r=>row(r,readOnly
+    ?'<span class="avail have">بعهدة الطالب</span>'
+    :`<button class="btn sm outline" onclick="confirmReturn('${r.code}','${r.id}')">استعدتها</button>`)).join('')
    :'<div class="empty">ما فيه نسخ خارج المكتبة.</div>'}</div></div>`}
 
 /* ---------- تحدي الأسبوع ---------- */
@@ -1726,9 +1736,9 @@ function chalView(){
    <div class="chaltop"><div><span class="chaleye">★ انتهى التحدي</span><h2>${esc(CHALLENGE.title)}</h2>
     <p class="cd">استمر من <span class="num">${CHALLENGE.start}</span> إلى <span class="num">${CHALLENGE.end}</span> ·
      الهدف ${CHALLENGE.target} ${M.l}</p></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
+    ${S.role==='admin'?`<div style="display:flex;gap:8px;flex-wrap:wrap">
      <button class="btn sm" style="background:#E7C463;color:#1A2420" onclick="openChal(0)">أطلق تحديًا جديدًا</button>
-     <button class="btn sm outline" style="border-color:rgba(255,255,255,.3);color:#D5DED9" onclick="endChal()">أرشفه</button></div></div>
+     <button class="btn sm outline" style="border-color:rgba(255,255,255,.3);color:#D5DED9" onclick="endChal()">أرشفه</button></div>`:''}</div>
    <div class="chalprog"><div class="chalnums">
      <div><span class="big num">${w.length}</span> <span class="of">من ${STUDENTS.length} أتمّوا التحدي</span></div></div>
     <div class="chalbar"><i data-w="${pct(w.length,STUDENTS.length)}"></i></div></div></div>
@@ -1736,8 +1746,8 @@ function chalView(){
    <h2>ترتيب المشاركين</h2><div style="margin-top:10px">${chalRankList(STUDENTS)}</div></div>`}
  if(!chalOn())return `${statStrip([{lab:'تحدٍ نشط',val:0,sub:'لا يوجد'}])}
   <div class="chalempty stagger" style="--i:1">
-   <p style="margin:0 0 14px">ما فيه تحدٍ نشط الآن. أطلق تحديًا يحرّك الطلاب هذا الأسبوع.</p>
-   <button class="btn sm" onclick="openChal()">+ أطلق تحديًا</button></div>`;
+   <p style="margin:0 0 14px">ما فيه تحدٍ نشط الآن.</p>
+   ${S.role==='admin'?'<button class="btn sm" onclick="openChal()">+ أطلق تحديًا</button>':'<span class="chip">للاطلاع فقط</span>'}</div>`;
  const w=chalWinners(STUDENTS),M=METRICS[CHALLENGE.metric];
  const avg=Math.round(STUDENTS.reduce((t,s)=>t+chalProgress(s.code),0)/Math.max(1,STUDENTS.length));
  return `${chalCardStudentAdmin()}
@@ -1754,10 +1764,10 @@ function chalCardStudentAdmin(){
   <div class="chaltop">
    <div><span class="chaleye">★ التحدي النشط</span>
     <h2>${esc(CHALLENGE.title)}</h2><p class="cd">${esc(CHALLENGE.desc)}</p></div>
-   <div style="display:flex;gap:8px;flex-wrap:wrap">
+   ${S.role==='admin'?`<div style="display:flex;gap:8px;flex-wrap:wrap">
     <button class="btn sm" style="background:#E7C463;color:#1A2420" onclick="openChal(1)">تعديل</button>
     <button class="btn sm outline" style="border-color:rgba(255,255,255,.3);color:#D5DED9" onclick="openChal(0)">تحدٍ جديد</button>
-    <button class="btn sm outline" style="border-color:rgba(255,255,255,.3);color:#D5DED9" onclick="endChal()">أرشفة</button></div></div>
+    <button class="btn sm outline" style="border-color:rgba(255,255,255,.3);color:#D5DED9" onclick="endChal()">أرشفة</button></div>`:''}</div>
   <div class="chalfoot" style="margin-top:18px">
    <span>الهدف: <span class="num">${CHALLENGE.target}</span> ${M.l} · ${M.n}</span>
    <span>من <span class="num">${CHALLENGE.start}</span> إلى <span class="num">${CHALLENGE.end}</span></span></div></div>`}
@@ -1793,16 +1803,16 @@ function addDays(iso,n){const d=new Date(iso+'T00:00Z');d.setUTCDate(d.getUTCDat
 /* ---------- المجموعات ونقل الطلاب ---------- */
 function groupsPanel(i){
  return `<div class="sec-title stagger" style="--i:${i}"><div>
-   <p class="eyebrow">اضغط «انقله» لنقل أي طالب لمجموعة أخرى</p><h2>المجموعات</h2></div>
-   <button class="btn sm" onclick="openAdd('supervisor')">+ مجموعة ومشرفها</button></div>
+   <p class="eyebrow">${S.role==='admin'?'تنظيم الطلاب ومشرفي المجموعات':'توزيع الطلاب على مجموعات الإشراف'}</p><h2>المجموعات</h2></div>
+   ${S.role==='admin'?'<button class="btn sm" onclick="openAdd(\'supervisor\')">+ مجموعة ومشرفها</button>':'<span class="chip">للاطلاع فقط</span>'}</div>
  <div class="gcols">${SUPERVISORS.map((v,k)=>{const my=STUDENTS.filter(s=>s.supervisor===v.code);
    const col=['var(--f-imani)','var(--f-shari)','var(--f-thaqafi)','var(--f-mahari)','var(--f-adabi)'][k%5];
    return `<div class="gcol stagger" style="--gc2:${col};--i:${i+1+k}">
     <div class="gchead"><div><b>${esc(v.group)}</b><span>${esc(v.name)} · <span class="num">${my.length}</span> طلاب</span></div>
-     <button class="gedit" onclick="openRename('${v.code}')" title="تعديل اسم المجموعة">✎</button></div>
+     ${S.role==='admin'?`<button class="gedit" onclick="openRename('${v.code}')" title="تعديل اسم المجموعة">✎</button>`:''}</div>
     ${my.length?my.map(s=>`<div class="gstud">
       <span class="gav">${esc(s.name.trim()[0])}</span><span class="gn">${esc(s.name)}</span>
-      <button class="movebtn" onclick="openMove('${s.code}')">انقله ↔</button></div>`).join('')
+      ${S.role==='admin'?`<button class="movebtn" onclick="openMove('${s.code}')">انقله ↔</button>`:`<button class="movebtn" onclick="viewStudent('${s.code}')">صفحته</button>`}</div>`).join('')
      :'<div class="empty" style="padding:20px;font-size:13px">مجموعة فارغة.</div>'}
    </div>`}).join('')}</div>`}
 function openMove(code){S.modal={t:'move',code};renderModal()}
@@ -1864,7 +1874,7 @@ function shelvesView(){
      ${r.st.length?`<div class="follow">${r.st.map(s=>{const dn=courseProgress(s.code,r.c);
        return `<span class="fchip" style="--c:${f.c}" onclick="viewStudent('${s.code}')" title="${esc(s.name)}">
         <span class="fav">${esc(s.name.trim()[0])}</span>${esc(s.name)} <span class="num">${pct(dn,r.c.total)}%</span></span>`}).join('')}</div>`
-      :`<div class="shempty">لا يتابعه أي طالب حاليًا في ${S.role==='admin'?'البرنامج':'مجموعتك'}.</div>`}
+      :`<div class="shempty">لا يتابعه أي طالب حاليًا في ${S.role==='admin'||S.role==='observer'?'البرنامج':'مجموعتك'}.</div>`}
  </div>`}).join('')}</div>`}
  return head+`<div class="shcards">${list.map((s,i)=>{
    const sh=openShelfOf(s.code).map(courseById).filter(Boolean);
@@ -1888,16 +1898,17 @@ function avatarLetter(n){const w=String(n).replace('أ. ','').trim().split(/\s+/
 function peopleView(){
  const avg7=STUDENTS.length?Math.round(STUDENTS.reduce((t,s)=>t+achievementRate(s,7),0)/STUDENTS.length):0;
  return `<div class="hero stagger"><div class="htop">
-   <div><p class="hlab">إدارة الفريق</p><h2>فريق الإشراف</h2></div>
+   <div><p class="hlab">${S.role==='admin'?'إدارة الفريق':'بيانات الفريق'}</p><h2>فريق الإشراف</h2></div>
    <div class="hstats">
     <div class="hstat"><div class="hk">مشرفون</div><div class="hv tealv"><span class="num" data-to="${SUPERVISORS.length}">0</span></div></div>
+    <div class="hstat"><div class="hk">متابعون</div><div class="hv"><span class="num" data-to="${OBSERVERS.length}">0</span></div></div>
     <div class="hstat"><div class="hk">طلاب</div><div class="hv"><span class="num" data-to="${STUDENTS.length}">0</span></div></div>
     <div class="hstat"><div class="hk">تحقيق المقدار · ٧ أيام</div><div class="hv goldv"><span class="num" data-to="${avg7}" data-suffix="%">0%</span></div></div>
    </div></div></div>
  ${groupsCard(1)}
  ${groupsPanel(2)}
  <div class="sec-title stagger" style="--i:8"><h2>المشرفون</h2>
-  <button class="btn sm" onclick="openAdd('supervisor')">+ إضافة مشرف</button></div>
+  ${S.role==='admin'?'<button class="btn sm" onclick="openAdd(\'supervisor\')">+ إضافة مشرف</button>':''}</div>
  <div class="pcards">${SUPERVISORS.map((v,i)=>{
    const my=STUDENTS.filter(s=>s.supervisor===v.code);
    const dn=my.filter(s=>rateOf(s,todayISO())>=100).length;
@@ -1916,7 +1927,16 @@ function peopleView(){
     </div>
     <div style="margin-top:12px;font-size:12px;color:var(--muted)">الأسبوع
       <span class="num" style="color:var(--ink)">${sum(wk,'pages')}ص · ${sum(wk,'minutes')}د</span></div>
-   </div>`}).join('')}</div>`}
+   </div>`}).join('')}</div>
+ <div class="sec-title stagger" style="--i:9"><div><p class="eyebrow">صلاحية مشاهدة كاملة بلا تعديل</p><h2>المشرفون المتابعون</h2></div>
+  ${S.role==='admin'?'<button class="btn sm" onclick="openAdd(\'observer\')">+ إضافة مشرف متابع</button>':'<span class="chip">للاطلاع فقط</span>'}</div>
+ <div class="pcards">${OBSERVERS.length?OBSERVERS.map((v,i)=>`<div class="pcard stagger" style="--i:${10+i}">
+   <div style="display:flex;align-items:center;gap:11px">
+    <span class="avatar" style="--sc:var(--teal)">${esc(avatarLetter(v.name))}</span>
+    <span class="nm"><b>${esc(v.name)}</b><span>مشرف متابع · اطلاع فقط</span></span></div>
+   <div style="margin-top:15px"><div style="font-size:11.5px;color:var(--muted)">رمز الدخول</div>
+    <span class="codebox">${v.code}</span></div>
+  </div>`).join(''):'<div class="card empty">لم يُضف مشرف متابع بعد.</div>'}</div>`}
 
 /* ---------- المقررات ---------- */
 function coursesView(){
@@ -1935,7 +1955,7 @@ function coursesView(){
  <div class="card stagger" style="--i:1;margin-bottom:14px">
   <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
    <div><p class="eyebrow">حسب عدد الطلاب اللي فتحوه</p><h2>أكثر المقررات إقبالًا</h2></div>
-   <button class="btn sm" onclick="openAdd('course')">+ إضافة مقرر</button></div>
+   ${S.role==='admin'?'<button class="btn sm" onclick="openAdd(\'course\')">+ إضافة مقرر</button>':'<span class="chip">للاطلاع فقط</span>'}</div>
   <div class="adopt">${top.map((a,i)=>{const f=fieldById(a.c.field);
     return `<div class="arow"><span class="rankbig">${i+1}</span>
      <span class="an"><span class="dot" style="background:${f.c};margin-left:6px"></span>${esc(a.c.title)}</span>
@@ -1956,18 +1976,18 @@ function coursesView(){
         ${c.note?`<p class="cnote" onclick="this.classList.toggle('open')">${esc(c.note)}</p>`:'<p class="cnote" style="color:var(--rose)">بلا نبذة</p>'}
         ${c.type==='read'?`<div class="copyrow">
           ${c.copies==null?`<span class="avail ok">بلا حصر (رقمي)</span>
-            <button class="qbtn" onclick="bumpCopies('${c.id}',0)" title="تحديد عدد النسخ">حدّد نسخًا</button>`
+            ${S.role==='admin'?`<button class="qbtn" onclick="bumpCopies('${c.id}',0)" title="تحديد عدد النسخ">حدّد نسخًا</button>`:''}`
           :`<span class="avail ${availOf(c)===0?'none':availOf(c)===1?'last':'ok'}">
              متاح <span class="num">${availOf(c)}</span> من <span class="num">${c.copies}</span></span>
-            <span class="qgrp"><button class="qbtn" onclick="bumpCopies('${c.id}',-1)">−</button>
+            ${S.role==='admin'?`<span class="qgrp"><button class="qbtn" onclick="bumpCopies('${c.id}',-1)">−</button>
              <button class="qbtn" onclick="bumpCopies('${c.id}',1)">+</button>
-             <button class="qbtn" onclick="setUnlimited('${c.id}')" title="بلا حصر">∞</button></span>`}
+             <button class="qbtn" onclick="setUnlimited('${c.id}')" title="بلا حصر">∞</button></span>`:''}`}
           ${waitList(c.id).length?`<span class="avail wait">⏳ <span class="num">${waitList(c.id).length}</span> بالانتظار</span>`:''}
          </div>`:''}</div>
        <span style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end">
         <span class="chip">${n} يتابعه</span>
-        <span class="qgrp"><button class="qbtn" onclick="openCourseEdit('${c.id}')">تعديل</button>
-         <button class="qbtn del" onclick="askDeleteCourse('${c.id}')">حذف</button></span></span></div>`}).join('')
+        ${S.role==='admin'?`<span class="qgrp"><button class="qbtn" onclick="openCourseEdit('${c.id}')">تعديل</button>
+         <button class="qbtn del" onclick="askDeleteCourse('${c.id}')">حذف</button></span>`:''}</span></div>`}).join('')
      :'<div class="empty" style="padding:22px">ما فيه مقررات في هذا المجال.</div>'}
    </div>`}).join('')}</div>`}
 
@@ -2097,10 +2117,10 @@ function modalHTML(){
    <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0">تظهر للطالب عند اختياره من المجال.</p>
    <div class="row"><button class="btn outline" onclick="closeModal()">إلغاء</button>
    <button class="btn" onclick="saveCourse()">${editing?'حفظ التعديلات':'إضافة المقرر'}</button></div>`;}
-  else{const isS=m.kind==='student';
-   b=`<h3>إضافة ${isS?'طالب':'مشرف'}</h3><p class="sub">الرمز الرباعي يُولَّد تلقائيًا ويُسلَّم للشخص.</p>
+  else{const isS=m.kind==='student',isO=m.kind==='observer';
+   b=`<h3>إضافة ${isS?'طالب':isO?'مشرف متابع':'مشرف'}</h3><p class="sub">الرمز الرباعي يُولَّد تلقائيًا ويُسلَّم للشخص.${isO?' صلاحيات الحساب للاطلاع فقط بلا تعديل.':''}</p>
     <label for="nn">الاسم</label><input id="nn" type="text" placeholder="الاسم الثلاثي">
-    <label for="ng">المجموعة</label><input id="ng" type="text" placeholder="مثال: المجموعة ج">
+    ${isO?'':`<label for="ng">المجموعة</label><input id="ng" type="text" placeholder="مثال: المجموعة ج">`}
     ${isS?`<label for="nsv">المشرف</label><select id="nsv">${SUPERVISORS.map(v=>`<option value="${v.code}">${esc(v.name)}</option>`).join('')}</select>`:''}
     <div class="row"><button class="btn outline" onclick="closeModal()">إلغاء</button>
     <button class="btn" onclick="savePerson('${m.kind}')">إضافة</button></div>`;}}
@@ -2241,12 +2261,13 @@ function deleteCourse(id){const c=courseById(id);if(!c)return closeModal();
  if(ENTRIES.some(e=>e.course===id))ARCHIVED_COURSES.push({...c,active:false});
  reindex();S.modal=null;renderModal();lastKey='';renderShell();toast('حُذف المقرر من المكتبة.')}
 function newCode(){let c;do{c=String(Math.floor(1000+Math.random()*9000))}
- while(studentByCode(c)||SUPERVISORS.find(s=>s.code===c)||c===ADMIN.code);return c}
+ while(studentByCode(c)||SUPERVISORS.find(s=>s.code===c)||OBSERVERS.find(s=>s.code===c)||c===ADMIN.code);return c}
 function savePerson(k){const n=$('#nn').value.trim();if(!n){$('#nn').focus();return}
- const g=$('#ng').value.trim()||'—',code=newCode();
+ const g=$('#ng')?$('#ng').value.trim()||'—':'المتابعة',code=newCode();
  if(REMOTE)return remoteCommand('create_person',{kind:k,name:n,group_name:g,
   supervisor_code:k==='student'?$('#nsv').value:null},'تمت الإضافة.');
  if(k==='student')STUDENTS.push({code,name:n,group:SUPERVISORS.find(v=>v.code===$('#nsv').value).group,supervisor:$('#nsv').value,goalP:20,goalM:30,shelf:[],goalSet:false});
+ else if(k==='observer')OBSERVERS.push({code,name:n});
  else SUPERVISORS.push({code,name:n,group:g});
  S.modal=null;renderModal();lastKey='';renderShell();toast('تمت الإضافة. الرمز: '+code)}
 function syncSl(id,type){
@@ -2294,6 +2315,7 @@ function toast(msg){const r=document.getElementById('toastRoot');
 
 /* ==================== العرض والحركة ==================== */
 let lastKey='';
+function readOnlyNotice(){return `<div class="nudge stagger" style="--i:0;margin-bottom:14px">👁 وضع الاطلاع فقط — يمكنك مشاهدة كامل البيانات، ولا يمكن لهذا الحساب إضافة أي بيانات أو تعديلها أو حذفها.</div>`}
 function renderShell(){
  if(!S.role){drawLogin();return}
  const key=[S.role,S.view,S.field,S.student].join('|'), anim=key!==lastKey; lastKey=key;
@@ -2303,6 +2325,9 @@ function renderShell(){
  if(S.role==='supervisor')main=tabs([{id:'students',label:'طلابي'},{id:'shelves',label:'الرفوف'},{id:'board',label:'المتصدرون'}])
    +(S.student?detailView():S.view==='shelves'?shelvesView():S.view==='board'?boardView():studentsView());
  if(S.role==='admin')main=tabs([{id:'students',label:'الطلاب'},{id:'chal',label:'تحدي الأسبوع'},{id:'loans',label:'العهدة'},{id:'shelves',label:'الرفوف'},{id:'people',label:'المجموعات'},{id:'courses',label:'المقررات'},{id:'board',label:'المتصدرون'}])
+   +(S.student?detailView():S.view==='chal'?chalView():S.view==='loans'?loansView():S.view==='shelves'?shelvesView():S.view==='people'?peopleView():S.view==='courses'?coursesView():S.view==='board'?boardView():studentsView());
+ if(S.role==='observer')main=tabs([{id:'students',label:'الطلاب'},{id:'chal',label:'تحدي الأسبوع'},{id:'loans',label:'العهدة'},{id:'shelves',label:'الرفوف'},{id:'people',label:'المجموعات'},{id:'courses',label:'المقررات'},{id:'board',label:'المتصدرون'}])
+   +readOnlyNotice()
    +(S.student?detailView():S.view==='chal'?chalView():S.view==='loans'?loansView():S.view==='shelves'?shelvesView():S.view==='people'?peopleView():S.view==='courses'?coursesView():S.view==='board'?boardView():studentsView());
  shell().innerHTML=topbar()+`<main class="wrap ${anim?'anim':''}" style="padding-bottom:70px">${main}</main>`;
  requestAnimationFrame(()=>{moveTabInd();observeReveals(anim)});
