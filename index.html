@@ -1582,6 +1582,8 @@ function flagCard(list,i){const fl=flaggedEntries(list);if(!fl.length)return '';
 function loansView(){
  const all=reqList();
  const pend=all.filter(r=>r.st==='pending'),out=all.filter(r=>r.st==='out'),back=all.filter(r=>r.st==='back');
+ const queues=Object.entries(WAIT).map(([id,codes])=>({c:courseById(id),codes}))
+  .filter(x=>x.c&&x.codes.length).sort((a,b)=>a.c.title.localeCompare(b.c.title,'ar'));
  const stale=out.filter(r=>{const st=studentByCode(r.code),c=courseById(r.id);
   return st&&c&&daysSince(r.at)>=14&&idleDays(r.code)>=5});
  const row=(r,act)=>{const st=studentByCode(r.code),c=courseById(r.id);
@@ -1611,10 +1613,20 @@ function loansView(){
   <div style="margin-top:10px">${back.length?back.map(r=>row(r,
     `<button class="btn sm" onclick="confirmReturn('${r.code}','${r.id}')">استلمت النسخة</button>`)).join('')
    :'<div class="empty">ما فيه نسخ بانتظار الاستلام.</div>'}</div></div>
- ${stale.length?`<div class="alert stagger" style="--i:3">
+ <div class="card stagger" style="--i:3;margin-bottom:14px">
+  <p class="eyebrow">الترتيب حسب وقت الانضمام — لا يمكن تجاوزه</p><h2>صفوف انتظار الكتب (${queues.length})</h2>
+  <div style="margin-top:10px">${queues.length?queues.map(q=>{const f=fieldById(q.c.field),av=availOf(q.c);
+   return `<div class="course"><span class="dot" style="background:${f.c}"></span>
+    <div class="meta"><b>${esc(q.c.title)}</b><span>متاح الآن <span class="num">${av}</span> من <span class="num">${q.c.copies}</span>
+     ${av>0?`· الدور متاح لأول <span class="num">${Math.min(av,q.codes.length)}</span>`:'· جميع النسخ في العهدة'}</span>
+     <div class="copyrow">${q.codes.map((code,i)=>{const st=studentByCode(code);return st?`<button class="qbtn" onclick="viewStudent('${code}')">
+       <span class="num">${i+1}</span> · ${esc(st.name)}</button>`:''}).join('')}</div></div>
+    <span class="avail wait"><span class="num">${q.codes.length}</span> بالانتظار</span></div>`}).join('')
+   :'<div class="empty">لا توجد صفوف انتظار الآن.</div>'}</div></div>
+ ${stale.length?`<div class="alert stagger" style="--i:4">
    <svg viewBox="0 0 24 24"><path d="M12 8v5M12 17h.01M10.3 3.9L2.4 18a2 2 0 001.7 3h15.8a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/></svg>
    <span><b>${stale.length}</b> ${stale.length===1?'نسخة راكدة':'نسخ راكدة'} — مضى عليها أكثر من أسبوعين والطالب متوقف عن التسجيل.</span></div>`:''}
- <div class="card stagger" style="--i:4"><p class="eyebrow">من بيده نسخة الآن</p>
+ <div class="card stagger" style="--i:5"><p class="eyebrow">من بيده نسخة الآن</p>
   <h2>النسخ بعهدة الطلاب (${out.length})</h2>
   <div style="margin-top:10px">${out.length?out.sort((a,b)=>a.at.localeCompare(b.at)).map(r=>row(r,
     `<button class="btn sm outline" onclick="confirmReturn('${r.code}','${r.id}')">استعدتها</button>`)).join('')
