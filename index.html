@@ -523,6 +523,7 @@ textarea:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 4px var(--
 .startbtn.ison:hover{background:var(--rose);border-color:var(--rose)}
 .startbtn.fin{border-color:#BFC8C2;color:var(--muted)}
 .startbtn.fin:hover{background:#EDEFEA;color:var(--ink);border-color:#BFC8C2}
+.media-link{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:4px}
 .nudge{display:flex;align-items:center;gap:9px;background:var(--gold-soft);border:1px solid #EBDCBB;color:#7A5A11;border-radius:13px;padding:11px 15px;margin-top:13px;font-size:13px}
 .shelfchips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
 
@@ -824,7 +825,7 @@ function hydrateRemote(state){
  COURSES=[];ARCHIVED_COURSES=[];PERSONAL_COURSES=[];
  for(const x of (state.courses||[])){const c={id:x.id,field:x.field_id,type:x.course_type,title:x.title,
    by:x.author||'—',total:+x.total,note:x.note||'',copies:x.copies==null?null:+x.copies,
-   owner:x.owner_code||null,personal:!!x.owner_code,active:x.active!==false};
+   url:x.resource_url||'',owner:x.owner_code||null,personal:!!x.owner_code,active:x.active!==false};
    (c.personal?PERSONAL_COURSES:c.active?COURSES:ARCHIVED_COURSES).push(c)}
  ENTRIES=(state.entries||[]).map(x=>({id:x.id,code:x.public_code,date:x.entry_date,course:x.course_id,
   pages:+x.pages||0,minutes:+x.minutes||0}));
@@ -1301,6 +1302,7 @@ function fieldView(){
        ${avHtml?`<div class="avrow">${avHtml}${av!==null&&!on?`<span class="avbar"><i style="width:${Math.round((av/c.copies)*100)}%"></i></span>`:''}</div>`:''}
        <div class="cfoot">
         <span class="cstate">${fin?'✓ ختمتَه':on?'قيد المتابعة':''}</span>
+        ${type==='listen'&&c.url?`<a class="startbtn media-link" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">فتح المقطع ↗</a>`:''}
         ${fin?`<button class="startbtn fin" onclick="openLog('${c.id}')">راجعه</button>`
          :L&&L.st==='pending'?`<button class="startbtn taken" onclick="rejectReq('${S.me.code}','${c.id}')">ألغِ الحجز</button>`
          :L&&L.st==='back'?`<button class="startbtn fin">بانتظار الاستلام</button>`
@@ -1976,7 +1978,7 @@ function openGoal(){S.modal={t:'goal'};renderModal()}
 function openAdd(k){S.modal={t:'add',kind:k,type:'read'};renderModal()}
 function openCourseEdit(id){const c=courseById(id);if(!c)return;
  S.modal={t:'course_edit',id,type:c.type,t_:c.title,b_:c.by,f_:c.field,n_:c.total,
-  c_:c.copies==null?'':c.copies,d_:c.note};renderModal()}
+  c_:c.copies==null?'':c.copies,d_:c.note,u_:c.url||''};renderModal()}
 function askDeleteCourse(id){const c=courseById(id);if(!c)return;S.modal={t:'course_delete',id};renderModal()}
 function closeModal(){S.modal=null;renderModal()}
 function modalHTML(){
@@ -2074,7 +2076,10 @@ function modalHTML(){
    <div style="display:flex;align-items:center;gap:10px">
      <input id="cc" type="number" min="0" value="${m.c_??''}" placeholder="اتركه فارغًا إذا كان رقميًا بلا حصر">
      <span class="chip" style="white-space:nowrap">نسخة</span></div>
-   <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0">ينقص المتاح كلما أضافه طالب لرفّه، ويعود إذا أوقفه.</p>`:''}
+   <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0">ينقص المتاح كلما أضافه طالب لرفّه، ويعود إذا أوقفه.</p>`:
+   `<label for="cu">رابط المقطع أو القائمة</label>
+    <input id="cu" type="url" dir="ltr" value="${esc(m.u_||'')}" placeholder="https://youtube.com/…">
+    <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0">يظهر للطالب زر «فتح المقطع» وينقله للرابط في تبويب جديد.</p>`}
    <label for="cd">نبذة عن المقرر</label>
    <textarea id="cd" rows="3" placeholder="لمن هذا المقرر؟ وماذا يستفيد منه الطالب؟">${esc(m.d_||'')}</textarea>
    <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0">تظهر للطالب عند اختياره من المجال.</p>
@@ -2199,18 +2204,20 @@ function saveGoal(){if(!canEditGoal(S.me)){closeModal();return toast('المقد
 function keepCourseForm(){const g=i=>document.getElementById(i);
  if(g('ct'))S.modal.t_=g('ct').value; if(g('cb'))S.modal.b_=g('cb').value;
  if(g('cf'))S.modal.f_=g('cf').value; if(g('cn'))S.modal.n_=g('cn').value; if(g('cc'))S.modal.c_=g('cc').value;
- if(g('cd'))S.modal.d_=g('cd').value}
+ if(g('cu'))S.modal.u_=g('cu').value;if(g('cd'))S.modal.d_=g('cd').value}
 function saveCourse(){const t=$('#ct').value.trim(),n=parseInt($('#cn').value,10);
  if(!t){$('#ct').focus();return}
  if(!n||n<1){$('#cn').focus();return toast(S.modal.type==='read'?'أدخل عدد صفحات الكتاب.':'أدخل عدد دقائق المقرر.')}
  const cpEl=$('#cc'),cp=cpEl&&cpEl.value.trim()!==''?Math.max(0,parseInt(cpEl.value,10)||0):null;
+ const url=S.modal.type==='listen'&&$('#cu')?$('#cu').value.trim():'';
+ if(url&&!/^https:\/\//i.test(url)){ $('#cu').focus();return toast('الرابط يجب أن يبدأ بـ https://')}
  const editing=S.modal.t==='course_edit',id=S.modal.id,payload={course_id:id,title:t,author:$('#cb').value.trim()||'—',field_id:$('#cf').value,
-  course_type:S.modal.type,total:n,note:$('#cd').value.trim(),copies:S.modal.type==='read'?cp:null};
+  course_type:S.modal.type,total:n,note:$('#cd').value.trim(),copies:S.modal.type==='read'?cp:null,resource_url:url||null};
  if(REMOTE)return remoteCommand(editing?'update_course':'save_course',payload,editing?'حُفظت تعديلات المقرر.':'أُضيف المقرر.');
  if(editing){const c=courseById(id);Object.assign(c,{title:t,by:payload.author,field:payload.field_id,
-   type:payload.course_type,total:n,note:payload.note,copies:payload.copies});reindex();S.modal=null;renderModal();lastKey='';renderShell();return toast('حُفظت تعديلات المقرر.')}
+   type:payload.course_type,total:n,note:payload.note,copies:payload.copies,url});reindex();S.modal=null;renderModal();lastKey='';renderShell();return toast('حُفظت تعديلات المقرر.')}
  COURSES.push({id:'c'+(Date.now().toString(36)),field:$('#cf').value,type:S.modal.type,title:t,
-  by:$('#cb').value.trim()||'—',total:n,note:$('#cd').value.trim(),
+  by:$('#cb').value.trim()||'—',total:n,note:$('#cd').value.trim(),url,
   copies:S.modal.type==='read'?cp:null});
  S.modal=null;renderModal();lastKey='';renderShell();
  const c=COURSES[COURSES.length-1];
