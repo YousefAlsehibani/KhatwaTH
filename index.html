@@ -1051,7 +1051,7 @@ function bookCard(c,i){
        <div class="bar"><i data-w="${p}" style="background:${f.c}"></i></div>
        <p class="blast">${fin?'أتممته كاملًا — بارك الله فيك.':lastTouch(S.me.code,c)+' · باقي '+Math.max(0,c.total-dn)+' '+unit}</p>
        <div class="bactions">
-        ${!read&&c.url?`<a class="btn sm media-link" style="flex:1;background:${f.c}" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">فتح المقطع ↗</a>`:''}
+        ${!read&&c.url?`<a class="btn sm media-link" style="flex:1;background:${f.c}" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">الانتقال للمقطع ↗</a>`:''}
         ${fin?`<button class="btn sm outline" style="flex:1;border-color:${f.c};color:${f.c}" onclick="stopCourse('${c.id}')">${isPhysical(c)?'أعدت الكتاب':'انقله للمكتملة'}</button>`
              :`<button class="btn sm outline" style="flex:1;border-color:${f.c};color:${f.c}" onclick="openLog('${c.id}')">${read?'سجّل قراءة':'سجّل سماع'}</button>
                <button class="iconbtn" title="إيقاف المتابعة" onclick="stopCourse('${c.id}')">✕</button>`}
@@ -1307,7 +1307,7 @@ function fieldView(){
        ${avHtml?`<div class="avrow">${avHtml}${av!==null&&!on?`<span class="avbar"><i style="width:${Math.round((av/c.copies)*100)}%"></i></span>`:''}</div>`:''}
        <div class="cfoot">
         <span class="cstate">${fin?'✓ ختمتَه':on?'قيد المتابعة':''}</span>
-        ${type==='listen'&&c.url?`<a class="startbtn media-link" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">فتح المقطع ↗</a>`:''}
+        ${type==='listen'&&c.url?`<a class="startbtn media-link" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">الانتقال للمقطع ↗</a>`:''}
         ${fin?`<button class="startbtn fin" onclick="openLog('${c.id}')">راجعه</button>`
          :L&&L.st==='pending'?`<button class="startbtn taken" onclick="rejectReq('${S.me.code}','${c.id}')">ألغِ الحجز</button>`
          :L&&L.st==='back'?`<button class="startbtn fin">بانتظار الاستلام</button>`
@@ -2111,7 +2111,7 @@ function modalHTML(){
    <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0">ينقص المتاح كلما أضافه طالب لرفّه، ويعود إذا أوقفه.</p>`:
    `<label for="cu">رابط المقطع أو القائمة</label>
     <input id="cu" type="url" dir="ltr" value="${esc(m.u_||'')}" placeholder="https://youtube.com/…">
-    <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0">يظهر للطالب زر «فتح المقطع» وينقله للرابط في تبويب جديد.</p>`}
+    <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0">يظهر للطالب زر «الانتقال للمقطع» في المجال وفي رف مسموعاته، ويفتح الرابط في تبويب جديد.</p>`}
    <label for="cd">نبذة عن المقرر</label>
    <textarea id="cd" rows="3" placeholder="لمن هذا المقرر؟ وماذا يستفيد منه الطالب؟">${esc(m.d_||'')}</textarea>
    <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0">تظهر للطالب عند اختياره من المجال.</p>
