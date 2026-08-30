@@ -733,6 +733,7 @@ const FIELDS=[
 const PERSONAL_FIELD={id:'personal',name:'خارج المقررات',desc:'اختيار شخصي',c:'#6C7B75'};
 let PERSONAL_COURSES=[];
 let COURSES=[];
+let ARCHIVED_COURSES=[];
 let STUDENTS=[];
 let SUPERVISORS=[];
 let CHALLENGE={active:false,title:'',desc:'',metric:'pages',target:1,start:null,end:null};
@@ -806,7 +807,7 @@ ENTRIES.forEach(e=>{if(!e.id)e.id=newEid()});
 STUDENTS.forEach(s=>(s.shelf||[]).forEach(id=>{const c=COURSES.find(x=>x.id===id);
  if(c&&c.type==='read'&&c.copies!=null)LOAN[s.code+'|'+id]={st:'out',at:dayISO(Math.floor(Math.random()*20)+2)}}));
 reindex();  /* بناء الفهارس بعد جاهزية البيانات */
-const courseById=i=>COURSES.find(c=>c.id===i)||PERSONAL_COURSES.find(c=>c.id===i);
+const courseById=i=>COURSES.find(c=>c.id===i)||ARCHIVED_COURSES.find(c=>c.id===i)||PERSONAL_COURSES.find(c=>c.id===i);
 const fieldById=i=>FIELDS.find(f=>f.id===i)||(i==='personal'?PERSONAL_FIELD:null);
 const personalCoursesOf=code=>PERSONAL_COURSES.filter(c=>c.owner===code);
 const studentByCode=c=>STUDENTS.find(s=>s.code===c);
@@ -820,10 +821,11 @@ function hydrateRemote(state){
  SUPERVISORS=ps.filter(x=>x.role==='supervisor').map(x=>({code:x.public_code,name:x.name,group:x.group_name||'—'}));
  const ad=ps.find(x=>x.role==='admin');ADMIN=ad?{code:ad.public_code,name:ad.name}:{code:'',name:'مشرف تنفيذي'};
  for(const x of shelves){const st=studentByCode(x.public_code);if(st)st.shelf.push(x.course_id)}
- COURSES=[];PERSONAL_COURSES=[];
+ COURSES=[];ARCHIVED_COURSES=[];PERSONAL_COURSES=[];
  for(const x of (state.courses||[])){const c={id:x.id,field:x.field_id,type:x.course_type,title:x.title,
    by:x.author||'—',total:+x.total,note:x.note||'',copies:x.copies==null?null:+x.copies,
-   owner:x.owner_code||null,personal:!!x.owner_code};(c.personal?PERSONAL_COURSES:COURSES).push(c)}
+   owner:x.owner_code||null,personal:!!x.owner_code,active:x.active!==false};
+   (c.personal?PERSONAL_COURSES:c.active?COURSES:ARCHIVED_COURSES).push(c)}
  ENTRIES=(state.entries||[]).map(x=>({id:x.id,code:x.public_code,date:x.entry_date,course:x.course_id,
   pages:+x.pages||0,minutes:+x.minutes||0}));
  LOAN={};for(const x of (state.loans||[]))LOAN[lk(x.public_code,x.course_id)]={st:x.status,at:x.status_date};
@@ -1925,7 +1927,7 @@ function coursesView(){
      <span class="an"><span class="dot" style="background:${f.c};margin-left:6px"></span>${esc(a.c.title)}</span>
      <span class="ab"><i data-w="${Math.round(a.n/mx*100)}" style="background:${f.c}"></i></span>
      <span class="av2">${a.n} طالب${a.fin?` · ${a.fin} ختم`:''}</span></div>`}).join('')}</div>
-  ${adopt[adopt.length-1].n===0?`<div class="nudge" style="margin-top:16px">💡 فيه مقررات ما اختارها أي طالب — راجعها أو استبدلها.</div>`:''}
+  ${adopt.length&&adopt[adopt.length-1].n===0?`<div class="nudge" style="margin-top:16px">💡 فيه مقررات ما اختارها أي طالب — راجعها أو استبدلها.</div>`:''}
  </div>
  <div class="fcols">${FIELDS.map((f,i)=>{const cs=COURSES.filter(c=>c.field===f.id);
    const rd=cs.filter(c=>c.type==='read').length;
@@ -1948,7 +1950,10 @@ function coursesView(){
              <button class="qbtn" onclick="setUnlimited('${c.id}')" title="بلا حصر">∞</button></span>`}
           ${waitList(c.id).length?`<span class="avail wait">⏳ <span class="num">${waitList(c.id).length}</span> بالانتظار</span>`:''}
          </div>`:''}</div>
-       <span class="chip">${n} يتابعه</span></div>`}).join('')
+       <span style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end">
+        <span class="chip">${n} يتابعه</span>
+        <span class="qgrp"><button class="qbtn" onclick="openCourseEdit('${c.id}')">تعديل</button>
+         <button class="qbtn del" onclick="askDeleteCourse('${c.id}')">حذف</button></span></span></div>`}).join('')
      :'<div class="empty" style="padding:22px">ما فيه مقررات في هذا المجال.</div>'}
    </div>`}).join('')}</div>`}
 
@@ -1969,6 +1974,10 @@ function openLog(id){
  S.modal={t:'log',course:id&&onShelf(S.me.code,id)?id:(sh[0]||null)};renderModal()}
 function openGoal(){S.modal={t:'goal'};renderModal()}
 function openAdd(k){S.modal={t:'add',kind:k,type:'read'};renderModal()}
+function openCourseEdit(id){const c=courseById(id);if(!c)return;
+ S.modal={t:'course_edit',id,type:c.type,t_:c.title,b_:c.by,f_:c.field,n_:c.total,
+  c_:c.copies==null?'':c.copies,d_:c.note};renderModal()}
+function askDeleteCourse(id){const c=courseById(id);if(!c)return;S.modal={t:'course_delete',id};renderModal()}
 function closeModal(){S.modal=null;renderModal()}
 function modalHTML(){
  const m=S.modal;if(!m)return'';let b='';
@@ -2046,9 +2055,10 @@ function modalHTML(){
    </div>
    <div class="row"><button class="btn outline" onclick="closeModal()">إلغاء</button>
    <button class="btn" onclick="saveGoal()">حفظ الهدف</button></div>`}
- if(m.t==='add'){
-  if(m.kind==='course'){const rd=m.type==='read';
-   b=`<h3>إضافة مقرر</h3><p class="sub">يظهر مباشرة في مكتبة المجال ليختاره الطلاب.</p>
+ if(m.t==='add'||m.t==='course_edit'){
+  const editing=m.t==='course_edit';
+  if(editing||m.kind==='course'){const rd=m.type==='read';
+   b=`<h3>${editing?'تحرير المقرر':'إضافة مقرر'}</h3><p class="sub">${editing?'تظهر التعديلات مباشرة مع بقاء إنجاز الطلاب محفوظًا.':'يظهر مباشرة في مكتبة المجال ليختاره الطلاب.'}</p>
    <label for="ct">اسم المقرر</label><input id="ct" type="text" value="${esc(m.t_||'')}" placeholder="مثال: شرح كتاب التوحيد">
    <label for="cb">المؤلف أو الملقي</label><input id="cb" type="text" value="${esc(m.b_||'')}" placeholder="اختياري">
    <label for="cf">المجال</label><select id="cf">${FIELDS.map(f=>`<option value="${f.id}"${m.f_===f.id?' selected':''}>${f.name}</option>`).join('')}</select>
@@ -2062,14 +2072,14 @@ function modalHTML(){
    <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0">عليه تُحسب نسبة إتمام الطالب وشارة الختم.</p>
    ${rd?`<label for="cc">عدد النسخ المتوفرة</label>
    <div style="display:flex;align-items:center;gap:10px">
-     <input id="cc" type="number" min="0" value="${m.c_||''}" placeholder="اتركه فارغًا إذا كان رقميًا بلا حصر">
+     <input id="cc" type="number" min="0" value="${m.c_??''}" placeholder="اتركه فارغًا إذا كان رقميًا بلا حصر">
      <span class="chip" style="white-space:nowrap">نسخة</span></div>
    <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0">ينقص المتاح كلما أضافه طالب لرفّه، ويعود إذا أوقفه.</p>`:''}
    <label for="cd">نبذة عن المقرر</label>
    <textarea id="cd" rows="3" placeholder="لمن هذا المقرر؟ وماذا يستفيد منه الطالب؟">${esc(m.d_||'')}</textarea>
    <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0">تظهر للطالب عند اختياره من المجال.</p>
    <div class="row"><button class="btn outline" onclick="closeModal()">إلغاء</button>
-   <button class="btn" onclick="saveCourse()">إضافة المقرر</button></div>`;}
+   <button class="btn" onclick="saveCourse()">${editing?'حفظ التعديلات':'إضافة المقرر'}</button></div>`;}
   else{const isS=m.kind==='student';
    b=`<h3>إضافة ${isS?'طالب':'مشرف'}</h3><p class="sub">الرمز الرباعي يُولَّد تلقائيًا ويُسلَّم للشخص.</p>
     <label for="nn">الاسم</label><input id="nn" type="text" placeholder="الاسم الثلاثي">
@@ -2077,6 +2087,16 @@ function modalHTML(){
     ${isS?`<label for="nsv">المشرف</label><select id="nsv">${SUPERVISORS.map(v=>`<option value="${v.code}">${esc(v.name)}</option>`).join('')}</select>`:''}
     <div class="row"><button class="btn outline" onclick="closeModal()">إلغاء</button>
     <button class="btn" onclick="savePerson('${m.kind}')">إضافة</button></div>`;}}
+ if(m.t==='course_delete'){const c=courseById(m.id),n=STUDENTS.filter(s=>onShelf(s.code,m.id)).length,
+  logs=ENTRIES.filter(e=>e.course===m.id).length,loans=reqList().filter(x=>x.id===m.id).length;
+  b=`<h3>حذف المقرر</h3><p class="sub">«${esc(c.title)}»</p>
+   <div class="takenbox">
+    <div class="tkline"><span>طلاب مرتبطون به حاليًا</span><b class="num">${n}</b></div>
+    <div class="tkline"><span>سجلات إنجاز محفوظة</span><b class="num">${logs}</b></div>
+    <div class="tkline"><span>قيود عهدة قائمة</span><b class="num">${loans}</b></div></div>
+   <p style="font-size:12.5px;color:var(--muted);margin-top:14px">سيختفي من مكتبة الطلاب. السجلات التاريخية لن تُحذف، ولا يمكن تنفيذ الحذف ما دامت عليه عهدة كتاب قائمة.</p>
+   <div class="row"><button class="btn outline" onclick="closeModal()">إلغاء</button>
+    <button class="btn" style="background:var(--rose)" onclick="deleteCourse('${m.id}')">تأكيد الحذف</button></div>`}
  if(m.t==='chal'){const c=CHALLENGE;
   b=`<h3>${m.editing?'تعديل التحدي الجاري':'إطلاق تحدٍ جديد'}</h3>
    <p class="sub">${m.editing?'تاريخ البداية وتقدّم الطلاب المحتسب لن يتأثرا.':'يبدأ اليوم ويظهر مباشرة لكل الطلاب والمشرفين.'}</p>
@@ -2184,14 +2204,23 @@ function saveCourse(){const t=$('#ct').value.trim(),n=parseInt($('#cn').value,10
  if(!t){$('#ct').focus();return}
  if(!n||n<1){$('#cn').focus();return toast(S.modal.type==='read'?'أدخل عدد صفحات الكتاب.':'أدخل عدد دقائق المقرر.')}
  const cpEl=$('#cc'),cp=cpEl&&cpEl.value.trim()!==''?Math.max(0,parseInt(cpEl.value,10)||0):null;
- if(REMOTE)return remoteCommand('save_course',{title:t,author:$('#cb').value.trim()||'—',field_id:$('#cf').value,
-  course_type:S.modal.type,total:n,note:$('#cd').value.trim(),copies:S.modal.type==='read'?cp:null},'أُضيف المقرر.');
+ const editing=S.modal.t==='course_edit',id=S.modal.id,payload={course_id:id,title:t,author:$('#cb').value.trim()||'—',field_id:$('#cf').value,
+  course_type:S.modal.type,total:n,note:$('#cd').value.trim(),copies:S.modal.type==='read'?cp:null};
+ if(REMOTE)return remoteCommand(editing?'update_course':'save_course',payload,editing?'حُفظت تعديلات المقرر.':'أُضيف المقرر.');
+ if(editing){const c=courseById(id);Object.assign(c,{title:t,by:payload.author,field:payload.field_id,
+   type:payload.course_type,total:n,note:payload.note,copies:payload.copies});reindex();S.modal=null;renderModal();lastKey='';renderShell();return toast('حُفظت تعديلات المقرر.')}
  COURSES.push({id:'c'+(Date.now().toString(36)),field:$('#cf').value,type:S.modal.type,title:t,
   by:$('#cb').value.trim()||'—',total:n,note:$('#cd').value.trim(),
   copies:S.modal.type==='read'?cp:null});
  S.modal=null;renderModal();lastKey='';renderShell();
  const c=COURSES[COURSES.length-1];
  toast('أُضيف «'+t+'» — '+n+' '+(c.type==='read'?'صفحة':'دقيقة'))}
+function deleteCourse(id){const c=courseById(id);if(!c)return closeModal();
+ if(REMOTE)return remoteCommand('delete_course',{course_id:id},'حُذف المقرر من المكتبة.');
+ if(reqList().some(x=>x.id===id))return toast('أغلق قيود العهدة أولًا قبل حذف المقرر.');
+ COURSES=COURSES.filter(x=>x.id!==id);STUDENTS.forEach(s=>s.shelf=(s.shelf||[]).filter(x=>x!==id));
+ if(ENTRIES.some(e=>e.course===id))ARCHIVED_COURSES.push({...c,active:false});
+ reindex();S.modal=null;renderModal();lastKey='';renderShell();toast('حُذف المقرر من المكتبة.')}
 function newCode(){let c;do{c=String(Math.floor(1000+Math.random()*9000))}
  while(studentByCode(c)||SUPERVISORS.find(s=>s.code===c)||c===ADMIN.code);return c}
 function savePerson(k){const n=$('#nn').value.trim();if(!n){$('#nn').focus();return}
