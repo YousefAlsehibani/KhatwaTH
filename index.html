@@ -1,26 +1,3 @@
-
-/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Index · HTML
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -80,7 +57,7 @@ button{font-family:inherit;font-size:inherit;cursor:pointer}
 :focus-visible{outline:2.5px solid var(--gold);outline-offset:3px;border-radius:8px}
 .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
 .spacer{flex:1}
- 
+
 /* ==================== الحركة ==================== */
 @keyframes rise{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
 @keyframes fadein{from{opacity:0}to{opacity:1}}
@@ -92,11 +69,11 @@ button{font-family:inherit;font-size:inherit;cursor:pointer}
 @keyframes drift{0%{transform:translate(0,0) scale(1)}50%{transform:translate(4%,-3%) scale(1.08)}100%{transform:translate(0,0) scale(1)}}
 @keyframes sheen{from{background-position:200% 0}to{background-position:-120% 0}}
 @keyframes climb{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
- 
+
 .anim .stagger{opacity:0}
 .anim .stagger.in{animation:rise .62s var(--ease) both;animation-delay:calc(var(--i,0)*60ms)}
 .topbar{animation:dropdown .5s var(--ease) both}
- 
+
 /* ==================== الشريط العلوي ==================== */
 .topbar{
   position:sticky;top:0;z-index:30;
@@ -113,7 +90,7 @@ button{font-family:inherit;font-size:inherit;cursor:pointer}
 .whoami b{display:block;color:#fff;font-weight:600;font-size:14px}
 .btn-ghost{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:#D5DED9;padding:7px 14px;border-radius:999px;font-size:13px;transition:.25s var(--ease)}
 .btn-ghost:hover{background:rgba(255,255,255,.14);color:#fff}
- 
+
 /* ==================== التبويبات ==================== */
 .tabs{position:relative;display:flex;gap:2px;border-bottom:1px solid var(--line);margin:26px 0 26px;overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
@@ -121,14 +98,14 @@ button{font-family:inherit;font-size:inherit;cursor:pointer}
 .tabs button[aria-selected="true"]{color:var(--ink);font-weight:600}
 .tabs button:hover{color:var(--ink-2)}
 .tab-ind{position:absolute;bottom:-1px;height:2.5px;background:var(--teal);border-radius:2px;transition:right .45s var(--spring),width .45s var(--spring)}
- 
+
 /* ==================== البطاقات ==================== */
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--sh-1);transition:box-shadow .35s var(--ease),transform .35s var(--ease)}
 .card:hover{box-shadow:var(--sh-2)}
 .grid{display:grid;gap:14px}
 .g2{grid-template-columns:repeat(2,1fr)}
 .sec-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:30px 0 14px}
- 
+
 /* ==================== الدخول ==================== */
 main.anim{animation:viewin .45s var(--ease) both}
 @keyframes viewin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
@@ -196,7 +173,7 @@ main.anim{animation:viewin .45s var(--ease) both}
 .hint code:hover{background:var(--teal);color:#fff}
 .leaving{animation:fadeout .45s var(--ease) forwards}
 @keyframes fadeout{to{opacity:0;transform:translateY(-14px) scale(.97)}}
- 
+
 /* ==================== حلقة اليوم ==================== */
 .today{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}
 .ring-row{display:flex;align-items:center;gap:22px;margin-top:6px}
@@ -221,7 +198,7 @@ main.anim{animation:viewin .45s var(--ease) both}
 .guard b{font-weight:600}
 .donebadge{display:inline-flex;align-items:center;gap:6px;background:var(--teal-soft);color:var(--teal);border-radius:999px;padding:5px 13px;font-size:12.5px;font-weight:600;animation:popin .5s var(--spring)}
 .pulse{position:absolute;inset:0;border-radius:50%;border:2px solid var(--teal);animation:ring 2.6s var(--ease) infinite;pointer-events:none}
- 
+
 /* ==================== السلّم ==================== */
 .stairs{width:100%;height:158px;display:block;margin-top:6px}
 .stair-bar{transform-box:fill-box;transform-origin:bottom}
@@ -230,7 +207,7 @@ main.anim{animation:viewin .45s var(--ease) both}
 .stagger.in .stair-lbl{animation:fadein .5s both;animation-delay:calc(var(--i)*80ms + 400ms)}
 .streak{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--muted)}
 .flame{width:15px;height:15px;fill:var(--gold)}
- 
+
 /* ==================== المجالات ==================== */
 .fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(186px,1fr));gap:13px}
 .field{
@@ -248,7 +225,7 @@ main.anim{animation:viewin .45s var(--ease) both}
 .field .tally{margin-top:14px;font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--ink);opacity:.75}
 .field .go{position:absolute;left:16px;bottom:14px;opacity:0;transform:translateX(6px);transition:.35s var(--ease);color:var(--c);font-size:17px}
 .field:hover .go{opacity:1;transform:none}
- 
+
 /* ==================== اختيار شخصي (ثانوي) ==================== */
 .personal-zone{
   margin-top:14px;padding:15px 17px;border:1px dashed #C8D2CB;border-radius:14px;background:rgba(255,255,255,.52);
@@ -265,7 +242,7 @@ main.anim{animation:viewin .45s var(--ease) both}
 .personal-resume{border:0;background:#F1F3F0;color:var(--muted);border-radius:999px;padding:4px 10px;font-size:11.5px;transition:.22s var(--ease)}
 .personal-resume:hover{background:var(--teal-soft);color:var(--teal)}
 @media(max-width:560px){.personal-actions{width:100%}.personal-add{flex:1}.personal-zone{align-items:stretch}}
- 
+
 /* ==================== الصفوف ==================== */
 .course{display:flex;align-items:center;gap:13px;padding:14px 6px;border-bottom:1px solid var(--line);transition:background .25s,padding .3s var(--ease);border-radius:10px}
 .course:last-child{border-bottom:0}
@@ -278,7 +255,7 @@ main.anim{animation:viewin .45s var(--ease) both}
 .meta span{color:var(--muted);font-size:12.5px}
 .chip{font-size:11.5px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:3px 11px;white-space:nowrap}
 .dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
- 
+
 /* ==================== الجداول ==================== */
 table{width:100%;border-collapse:collapse;font-size:14px}
 th{text-align:right;font-weight:600;font-size:12px;color:var(--muted);padding:0 10px 12px;border-bottom:1px solid var(--line)}
@@ -293,7 +270,7 @@ tbody tr:hover{background:#F7F9F6}
 .bar i{display:block;height:100%;width:0;background:var(--teal);border-radius:99px;transition:width 1s var(--ease)}
 .bar.g i{background:var(--gold)}
 .me-row{background:linear-gradient(90deg,var(--teal-soft),transparent 70%)!important}
- 
+
 /* ==================== النوافذ ==================== */
 .overlay{position:fixed;inset:0;background:rgba(15,29,25,.42);backdrop-filter:blur(3px);
  display:flex;align-items:flex-start;justify-content:center;padding:18px;z-index:50;
@@ -330,7 +307,7 @@ input:focus,select:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 
 @keyframes toastin{from{opacity:0;transform:translate(50%,26px)}to{opacity:1;transform:translate(50%,0)}}
 .toast{transform:translateX(50%)}
 .sheen{background:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.5) 45%,transparent 70%);background-size:220% 100%;animation:sheen 2.2s var(--ease)}
- 
+
 /* ==================== لوحات المشرفين ==================== */
 .dash-head{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;margin-bottom:16px}
 .stat-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:12px;margin-bottom:20px}
@@ -389,7 +366,7 @@ input:focus,select:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 
 .fhead h3{font-size:21px;color:var(--c)}
 .alert{display:flex;align-items:center;gap:11px;background:#FCF3F5;border:1px solid #F0D9DF;color:#7C2440;border-radius:14px;padding:13px 16px;margin-bottom:16px;font-size:13.5px}
 .alert svg{width:19px;height:19px;fill:none;stroke:var(--rose);stroke-width:1.8;flex:none}
- 
+
 /* ==================== مقررات الفترة ==================== */
 .period{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:13px}
 .bookcard{position:relative;overflow:hidden;display:flex;gap:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--sh-1);transition:transform .45s var(--spring),box-shadow .45s var(--ease)}
@@ -408,7 +385,7 @@ input:focus,select:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 
 .brow b{font-family:"IBM Plex Mono",monospace;font-size:19px;font-weight:600;color:var(--c)}
 .blast{font-size:11.5px;color:var(--muted);margin-top:8px}
 .badge-now{position:absolute;top:14px;left:14px;background:var(--c);color:#fff;font-size:10.5px;font-weight:600;border-radius:999px;padding:3px 10px;letter-spacing:0}
- 
+
 /* ==================== شريط الهدف ==================== */
 .goalbox{background:#F7F9F7;border:1px solid var(--line);border-radius:16px;padding:16px 17px 12px;margin-top:14px}
 .gtop{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
@@ -432,7 +409,7 @@ input:focus,select:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 
 .presets button{flex:1;border:1px solid var(--line);background:var(--surface);border-radius:11px;padding:9px 4px;font-size:13px;color:var(--muted);transition:.28s var(--ease)}
 .presets button:hover{border-color:var(--teal);color:var(--teal);transform:translateY(-2px)}
 .presets button b{display:block;font-family:"IBM Plex Mono",monospace;font-size:11.5px;font-weight:500;opacity:.7}
- 
+
 /* ==================== سجل الإنجاز ==================== */
 .heat{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,1fr);gap:4px;margin-top:14px;direction:rtl}
 .hc{width:100%;aspect-ratio:1;border-radius:3.5px;background:#EAEDE8;transition:transform .25s var(--spring)}
@@ -469,7 +446,7 @@ input:focus,select:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 
 .medal.off{opacity:.42;filter:grayscale(1)}
 .medal .mi{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:var(--gold-soft);font-size:15px}
 .medal small{display:block;color:var(--muted);font-size:11px}
- 
+
 /* ==================== الرفّ واختيار المقررات ==================== */
 .shelfhead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .shelfhead .lnk{background:none;border:0;color:var(--teal);font-size:13.5px;padding:0;transition:.25s}
@@ -549,7 +526,7 @@ textarea:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 4px var(--
 .media-link{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:4px}
 .nudge{display:flex;align-items:center;gap:9px;background:var(--gold-soft);border:1px solid #EBDCBB;color:#7A5A11;border-radius:13px;padding:11px 15px;margin-top:13px;font-size:13px}
 .shelfchips{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
- 
+
 @media(max-width:760px){.bookcard{flex-direction:row}.donut{width:120px;height:120px}}
 /* ==================== لوحة القيادة ==================== */
 .hero{position:relative;overflow:hidden;border-radius:22px;padding:26px 28px 22px;margin-bottom:16px;
@@ -578,7 +555,7 @@ textarea:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 4px var(--
 .spark .gl{fill:none;stroke:#6FD3C4;opacity:.5}
 .stagger.in .spark .gl{animation:ring 2.6s var(--ease) 1.8s infinite}
 .spark text{font-family:"IBM Plex Mono",monospace;font-size:9px;fill:#7C8F88}
- 
+
 /* ==================== مصفوفة المواظبة ==================== */
 .matwrap{overflow-x:auto;padding-bottom:6px}
 .matrix{min-width:620px;display:grid;grid-template-columns:158px repeat(14,1fr);gap:4px;align-items:center}
@@ -594,7 +571,7 @@ textarea:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 4px var(--
 .stagger.in .mc{animation:fadein .45s both;animation-delay:calc(var(--r)*45ms + var(--k)*16ms + 200ms)}
 .mrow{display:contents}
 .mrow:hover .mname{color:var(--teal);font-weight:600}
- 
+
 /* ==================== مقارنة المجموعات ==================== */
 .grow{display:flex;align-items:center;gap:12px;margin-top:14px}
 .grow .gl2{width:132px;flex:none;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -604,7 +581,7 @@ textarea:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 4px var(--
 .gval{width:96px;text-align:left;font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--muted);flex:none}
 .keyrow{display:flex;gap:16px;font-size:12px;color:var(--muted);margin-top:14px}
 .keyrow i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-left:5px}
- 
+
 /* ==================== أكثر المقررات متابعة ==================== */
 .adopt{margin-top:6px}
 .arow{display:flex;align-items:center;gap:12px;padding:9px 0}
@@ -613,7 +590,7 @@ textarea:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 4px var(--
 .arow .ab i{display:block;height:100%;width:0;border-radius:99px;transition:width 1s var(--ease)}
 .arow .av2{width:104px;text-align:left;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);flex:none}
 .rankbig{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);width:18px;flex:none}
- 
+
 /* ==================== تبويب الرفوف ==================== */
 .shcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:13px}
 .shcard{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:17px;box-shadow:var(--sh-1);transition:transform .4s var(--spring),box-shadow .4s var(--ease)}
@@ -646,7 +623,7 @@ textarea:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 4px var(--
 .fchip:hover{background:var(--surface);border-color:var(--c);transform:translateY(-2px)}
 .fchip .fav{width:23px;height:23px;border-radius:50%;display:grid;place-items:center;color:#fff;font-family:"Zain",sans-serif;font-weight:800;font-size:11.5px;background:var(--c)}
 .fchip .num{color:var(--c);font-weight:600;font-size:11.5px}
- 
+
 /* ==================== تحدي الأسبوع ==================== */
 .chalcard{position:relative;overflow:hidden;border-radius:20px;padding:24px 26px;margin:16px 0;
  background:linear-gradient(118deg,#0F1D19 0%,#123A33 58%,#1B4F43 100%);color:#E9EDE9;
@@ -694,7 +671,7 @@ textarea:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 4px var(--
 .crank .rb{width:130px;flex:none;height:7px;border-radius:99px;background:#EFF1EE;overflow:hidden}
 .crank .rb i{display:block;height:100%;width:0;border-radius:99px;transition:width 1s var(--ease)}
 .crank .rv{width:74px;text-align:left;font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--muted);flex:none}
- 
+
 /* ==================== المجموعات ==================== */
 .gcols{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:13px;margin-top:14px}
 .gcol{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;position:relative;overflow:hidden;transition:.4s var(--ease)}
@@ -717,7 +694,7 @@ textarea:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 4px var(--
 .gpick:hover{border-color:var(--teal);background:var(--teal-soft);transform:translateX(-3px)}
 .gpick.cur{opacity:.5;pointer-events:none}
 .gpick b{flex:1;font-size:14.5px}
- 
+
 .goalwin{display:flex;align-items:center;gap:14px;background:var(--surface);border:1.5px solid var(--line);
  border-radius:16px;padding:15px 18px;margin-bottom:16px;box-shadow:var(--sh-1);transition:.4s var(--ease)}
 .goalwin.open{border-color:#BFE0DA;background:linear-gradient(120deg,var(--teal-soft),var(--surface) 65%)}
@@ -755,6 +732,25 @@ textarea:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 4px var(--
 .wrow .wact.drop:hover{background:var(--rose);color:#fff;transform:scale(1.12)}
 .wrow.busy{opacity:.55;pointer-events:none}
 .wrow.leaving{animation:wout .34s var(--ease) forwards;pointer-events:none}
+/* ==================== علامة المراجعة ==================== */
+@keyframes checkpop{0%{transform:scale(1)}40%{transform:scale(1.32) rotate(-8deg)}100%{transform:scale(1)}}
+@keyframes rowcalm{from{background:var(--teal-soft)}to{background:transparent}}
+.flagrow{transition:opacity .4s var(--ease),background .4s var(--ease)}
+.flagrow .revby{display:block;font-size:11.5px;color:var(--teal);font-weight:600;
+ max-height:0;opacity:0;overflow:hidden;transition:max-height .34s var(--ease),opacity .3s var(--ease)}
+.flagrow.done .revby{max-height:22px;opacity:1}
+.flagrow.done{opacity:.62;animation:rowcalm 1.1s var(--ease)}
+.flagrow.done:hover{opacity:1}
+.revbtn{flex:none;width:34px;height:34px;border-radius:11px;border:1.5px solid var(--line);
+ background:var(--surface);color:#C3CCC6;font-size:15px;line-height:1;
+ transition:transform .28s var(--spring),background .26s var(--ease),color .26s var(--ease),border-color .26s var(--ease)}
+.revbtn:hover{border-color:var(--teal);color:var(--teal);transform:translateY(-2px)}
+.revbtn.on{background:var(--teal);border-color:var(--teal);color:#fff;animation:checkpop .42s var(--spring)}
+.revbtn.on:hover{background:var(--teal-2)}
+.revbtn.busy{opacity:.5;pointer-events:none}
+.flagcard{transition:border-color .5s var(--ease)}
+.flagcard.clear .eyebrow::after{content:" · لا متبقٍ";color:var(--teal)}
+@media(max-width:560px){.flagrow .btn.sm.outline{display:none}}
 @media(max-width:760px){.chalcard{padding:20px}}
 @media(max-width:760px){.shcards{grid-template-columns:1fr}}
 @media(max-width:760px){.hero{padding:20px}.matrix{min-width:560px}}
@@ -770,7 +766,7 @@ const REMOTE=true;
 const SB=window.supabase.createClient(window.KHUTWAH_CONFIG.supabaseUrl,
  window.KHUTWAH_CONFIG.supabasePublishableKey,{auth:{persistSession:true,autoRefreshToken:true}});
 let REMOTE_HOLD=null,LEADERBOARD=[],CHAL_BOARD=[],REMOTE_READY=false;
- 
+
 /* ==================== البيانات ==================== */
 const FIELDS=[
  {id:'imani',name:'إيماني',desc:'رقائق وتزكية',c:'var(--f-imani)'},
@@ -804,7 +800,7 @@ const dayLabel=i=>DAYS[new Date(i+'T00:00').getDay()];
 let ENTRIES=[];
 let GOALS_OPEN=true;  /* نافذة تعديل المقدار — مفتوحة بداية الأسبوع، يغلقها التنفيذي بعد ضبط الجميع */
 /* تُحمّل البيانات من Supabase بعد التحقق من الرمز. */
- 
+
 /* ==================== أدوات ==================== */
 let S={role:null,me:null,view:'today',field:null,student:null,modal:null,toast:null,buf:''};
 const $=s=>document.querySelector(s), shell=()=>document.getElementById('shell');
@@ -863,7 +859,7 @@ const personalCoursesOf=code=>PERSONAL_COURSES.filter(c=>c.owner===code);
 const studentByCode=c=>STUDENTS.find(s=>s.code===c);
 const pct=(a,b)=>b>0?Math.min(100,Math.round(a/b*100)):(a>0?100:0);
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
- 
+
 function hydrateRemote(state){
  const ps=state.profiles||[],shelves=state.shelves||[];
  STUDENTS=ps.filter(x=>x.role==='student').map(x=>({code:x.public_code,name:x.name,group:x.group_name||'—',
@@ -878,6 +874,7 @@ function hydrateRemote(state){
    url:x.resource_url||'',owner:x.owner_code||null,personal:!!x.owner_code,active:x.active!==false};
    (c.personal?PERSONAL_COURSES:c.active?COURSES:ARCHIVED_COURSES).push(c)}
  ENTRIES=(state.entries||[]).map(x=>({id:x.id,code:x.public_code,date:x.entry_date,course:x.course_id,
+  reviewed:!!x.reviewed,reviewedBy:x.reviewed_by||null,
   pages:+x.pages||0,minutes:+x.minutes||0}));
  LOAN={};for(const x of (state.loans||[]))LOAN[lk(x.public_code,x.course_id)]={st:x.status,at:x.status_date};
  WAIT={};for(const x of (state.waitlist||[]))WAIT[x.course_id]=x.public_codes||[];
@@ -902,7 +899,7 @@ async function initRemote(){
  try{const {data}=await SB.auth.getSession();if(!data.session){const r=await SB.auth.signInAnonymously();if(r.error)throw r.error}
   REMOTE_READY=true;drawLogin()
  }catch(e){drawLogin('تعذّر الاتصال. تأكد من تفعيل Anonymous Sign-Ins في Supabase ثم حدّث الصفحة.')}}
- 
+
 /* ==================== الدخول ==================== */
 function loginHTML(err){
  const b=S.buf;
@@ -963,7 +960,7 @@ async function login(){
 }
 function logout(){const m=shell().querySelector('main');if(m&&!reduced)m.style.opacity=0;
  setTimeout(()=>{S={role:null,me:null,view:'today',field:null,student:null,modal:null,buf:''};lastKey='';drawLogin();},reduced?0:200);}
- 
+
 /* ==================== الهيكل ==================== */
 function topbar(){
  const rn={student:'طالب',supervisor:'مشرف',observer:'مشرف متابع',admin:'مشرف تنفيذي'}[S.role];
@@ -984,7 +981,7 @@ function tabs(list){
 function go(v){S.view=v;S.field=null;S.student=null;renderShell()}
 function openField(id){S.field=id;S.view='field';renderShell()}
 function viewStudent(c){S.student=c;renderShell()}
- 
+
 /* ==================== الطالب ==================== */
 function courseProgress(code,c){return CTOT[code+'|'+c.id]||0}
 function shelfOf(code){const s2=studentByCode(code);return (s2&&s2.shelf)||[]}
@@ -1255,11 +1252,12 @@ function stairsCard(me,i){
   ${risk?`<p style="margin:7px 0 0;font-size:12px;color:var(--rose)">
     مواظبتك على المحك — يقفل اليوم ٣:٠٠ فجرًا، باقي ${closeText()}.</p>`:''}
   <svg class="stairs" viewBox="0 0 400 158" role="img" aria-label="إنجاز آخر سبعة أيام">${bars}</svg></div>`}
- 
+
 /* ---------- سجل إنجازي ---------- */
 function bestStreak(code){return memo('bs'+code,()=>_best(code))}
 function _best(code){const st=studentByCode(code);if(!st)return 0;let b=0,n=0;
- for(let k=120;k>=0;k--){if(metGoal(st,dayISO(k))){n++;b=Math.max(b,n)}else n=0}return b}
+ /* نافذة ٩٠ يومًا: مطابقة لما يرسله السيرفر فعلًا — المسح أبعد يقرأ فراغًا ويهبط بالنتيجة. */
+ for(let k=89;k>=0;k--){if(metGoal(st,dayISO(k))){n++;b=Math.max(b,n)}else n=0}return b}
 function heatCard(i){
  const me=S.me,WK=14,cells=[];
  const off=new Date(todayISO()+'T00:00').getDay();
@@ -1324,7 +1322,7 @@ function logView(){
  <div class="sec-title stagger" style="--i:7"><h2>رحلتك يومًا بيوم</h2>
   <span class="chip">${days} يوم</span></div>
  <div class="tl">${tl}</div>`}
- 
+
 function boardView(){
  const rank=(LEADERBOARD.length?LEADERBOARD.map(x=>({s:{code:x.public_code,name:x.name},today:+x.today_rate,
   avg:+x.avg_rate,streak:+x.streak})):STUDENTS.map(s=>({s,today:rateOf(s,todayISO()),avg:achievementRate(s,7),streak:streakOf(s.code)})))
@@ -1380,7 +1378,7 @@ function fieldView(){
     <h2 style="color:${f.c}">${f.name}</h2></div>
    <span class="chip">${mine?`<span class="num">${mine}</span> قيد المتابعة`:f.desc}</span></div>
   ${sec('read','مقررات قرائية',1)}${sec('listen','مقررات سماعية',2)}`}
- 
+
 /* ==================== لوحات المشرفين ==================== */
 let FILTER='all';
 function setFilter(f){FILTER=f;lastKey='';renderShell()}
@@ -1411,7 +1409,7 @@ function statStrip(items){return `<div class="stat-strip">${items.map((x,i)=>
    <div class="lab">${x.lab}</div>
    <div class="val"><span class="num" data-to="${x.val}" ${x.sfx?`data-suffix="${x.sfx}"`:''}>0</span>${x.sub?` <small>${x.sub}</small>`:''}</div>
   </div>`).join('')}</div>`}
- 
+
 /* ---------- منحنى نبض المجموعة ---------- */
 function sparkline(list,days){
  const W=1000,H=96,n=days||14;
@@ -1456,7 +1454,7 @@ function heroPanel(){
   <div style="display:flex;justify-content:space-between;font-size:10.5px;color:#7C8F88;margin-top:-4px">
    <span>قبل ١٤ يومًا</span><span>اليوم</span></div>
  </div>`}
- 
+
 /* ---------- مصفوفة المواظبة ---------- */
 function matrixCard(list,i){
  const N=14;
@@ -1480,7 +1478,7 @@ function matrixCard(list,i){
      </div>`}).join('')}
   </div></div>
   <div class="cellinfo" id="matinfo">اضغط أي مربع لعرض تفاصيل يومه.</div></div>`}
- 
+
 /* ---------- بطاقة طالب ---------- */
 function miniBars(s){const W=240,H=46,bw=W/7-6;
  return `<svg class="mini" viewBox="0 0 ${W} ${H}" aria-hidden="true">${[...Array(7)].map((_,k)=>{
@@ -1506,7 +1504,7 @@ function scard(s,i){
   <div class="foot" style="border:0;padding-top:7px;margin-top:0">
    <span>${!s.goalSet?'⏳ ':''}${open} مقرر مفتوح · الأسبوع <span class="num" style="color:var(--ink)">${sum(w,'pages')}ص</span></span>
    <span>${str>0?`🔥 <span class="num">${str}</span> مواظبة`:'—'}</span></div></button>`}
- 
+
 /* ---------- مقارنة المجموعات (للتنفيذي) ---------- */
 function groupsCard(i){
  const rows=SUPERVISORS.map(v=>{const my=STUDENTS.filter(s=>s.supervisor===v.code);
@@ -1521,7 +1519,7 @@ function groupsCard(i){
     <span class="gval">${r.avg}%</span></div>`).join('')}
   <div class="keyrow"><span><i style="background:var(--teal)"></i>تحقيق المقدار</span>
    <span style="margin-right:auto">متوسط البرنامج: <span class="num">${programAvg}%</span></span></div></div>`}
- 
+
 /* ---------- الشاشة الرئيسية للمشرف ---------- */
 function studentsView(){
  const all=myStudents(),today=todayISO();
@@ -1555,7 +1553,7 @@ function studentsView(){
  </div>
  ${list.length?`<div class="scards">${list.map((s,i)=>scard(s,6+i)).join('')}</div>`
   :'<div class="card empty stagger">ما فيه طلاب في هذي القائمة.</div>'}`}
- 
+
 /* ---------- صفحة الطالب عند المشرف ---------- */
 function detailView(){
  const s=studentByCode(S.student);
@@ -1617,7 +1615,7 @@ function detailView(){
      <span>${f.name} · <span class="num">${r.date}</span>${fg.length?' · '+fg[0]:''}</span></div>
     <span class="chip">${r.pages?r.pages+' صفحة':r.minutes+' دقيقة'}</span></div>`}).join('')
    :'<div class="empty">لا يوجد تسجيلات.</div>'}</div>`}
- 
+
 /* ---------- رصد التسجيلات غير الدقيقة ---------- */
 function flagsOf(st,e){const c=courseById(e.course),out=[];
  const v=e.pages||e.minutes,goal=e.pages?st.goalP:st.goalM,unit=e.pages?'صفحة':'دقيقة';
@@ -1628,19 +1626,52 @@ function flagsOf(st,e){const c=courseById(e.course),out=[];
  return out}
 function flaggedEntries(list){const out=[];
  list.forEach(st=>entriesOf(st.code).forEach(e=>{const f=flagsOf(st,e);if(f.length)out.push({st,e,f})}));
- return out.sort((a,b)=>b.e.date.localeCompare(a.e.date))}
+ /* غير المراجَع أولًا، ثم الأحدث — الشغل المتبقي يتصدّر دائمًا. */
+ return out.sort((a,b)=>(a.e.reviewed?1:0)-(b.e.reviewed?1:0)||b.e.date.localeCompare(a.e.date))}
+function flagRow(x){const c=courseById(x.e.course),done=!!x.e.reviewed,ro=S.role==='observer';
+ return `<div class="course flagrow ${done?'done':''}" id="fg_${x.e.id}">
+   <span class="dot" style="background:${done?'var(--teal)':'var(--rose)'}"></span>
+   <div class="meta"><b>${esc(x.st.name)} — <span class="num">${x.e.pages||x.e.minutes}</span> ${x.e.pages?'صفحة':'دقيقة'}</b>
+    <span>${esc(c?c.title:'—')} · <span class="num">${x.e.date}</span> · ${x.f.join(' · ')}</span>
+    <span class="revby">${done?'✓ تمت المراجعة'+(x.e.reviewedBy?' · '+esc(x.e.reviewedBy):''):''}</span></div>
+   <button class="btn sm outline" onclick="viewStudent('${x.st.code}')">صفحته</button>
+   ${ro?'':`<button class="revbtn ${done?'on':''}" title="${done?'تراجع عن المراجعة':'ضع علامة تمت المراجعة'}"
+     onclick="toggleReview('${x.e.id}',this)">✓</button>`}</div>`}
 function flagCard(list,i){const fl=flaggedEntries(list);if(!fl.length)return '';
- return `<div class="card stagger" style="--i:${i};margin-bottom:14px;border-color:#F0D9DF">
+ const open=fl.filter(x=>!x.e.reviewed).length;
+ return `<div class="card stagger flagcard ${open?'':'clear'}" id="flagcard"
+   style="--i:${i};margin-bottom:14px;border-color:${open?'#F0D9DF':'#BFE0DA'}">
   <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
    <div><p class="eyebrow">أرقام غير معتادة — راجعها مع الطالب</p><h2>تسجيلات تحتاج تدقيق</h2></div>
-   <span class="pill off">⚠ <span class="num">${fl.length}</span></span></div>
-  <div style="margin-top:12px">${fl.slice(0,8).map(x=>{const c=courseById(x.e.course);
-   return `<div class="course"><span class="dot" style="background:var(--rose)"></span>
-    <div class="meta"><b>${esc(x.st.name)} — <span class="num">${x.e.pages||x.e.minutes}</span> ${x.e.pages?'صفحة':'دقيقة'}</b>
-     <span>${esc(c.title)} · <span class="num">${x.e.date}</span> · ${x.f.join(' · ')}</span></div>
-    <button class="btn sm outline" onclick="viewStudent('${x.st.code}')">صفحته</button></div>`}).join('')}
-   ${fl.length>8?`<p style="font-size:12.5px;color:var(--muted);margin:12px 0 0">و${fl.length-8} تسجيلات أخرى.</p>`:''}</div></div>`}
- 
+   <span class="pill ${open?'off':'ok'}" id="flagpill">${open?'⚠ <span class="num">'+open+'</span>':'✓ راجعتها كلها'}</span></div>
+  <div style="margin-top:12px">${fl.slice(0,10).map(flagRow).join('')}
+   ${fl.length>10?`<p style="font-size:12.5px;color:var(--muted);margin:12px 0 0">و${fl.length-10} تسجيلات أخرى.</p>`:''}</div></div>`}
+/* تبديل المراجعة: نداء خفيف يرجّع سطرًا واحدًا، ونعدّل العقدة مكانها.
+   لا renderShell هنا — إعادة بناء الشاشة كاملة لأجل علامة صح هي سبب التعليق. */
+async function toggleReview(eid,btn){
+ if(btn.dataset.busy)return;
+ const e=ENTRIES.find(x=>x.id===eid);if(!e)return;
+ const next=!e.reviewed,row=document.getElementById('fg_'+eid);
+ btn.dataset.busy='1';btn.classList.add('busy');
+ btn.classList.toggle('on',next);if(row)row.classList.toggle('done',next);   /* تفاؤلي */
+ try{const {data,error}=await SB.rpc('review_entry',{p_entry:eid,p_reviewed:next});
+  if(error)throw error;
+  e.reviewed=!!data.reviewed;e.reviewedBy=data.by||null;
+  if(row){const lbl=row.querySelector('.revby'),dot=row.querySelector('.dot');
+   if(lbl)lbl.textContent=e.reviewed?'✓ تمت المراجعة'+(e.reviewedBy?' · '+e.reviewedBy:''):'';
+   if(dot)dot.style.background=e.reviewed?'var(--teal)':'var(--rose)'}
+  refreshFlagPill()
+ }catch(err){                                                                /* تراجع عند الفشل */
+  btn.classList.toggle('on',e.reviewed);if(row)row.classList.toggle('done',e.reviewed);
+  toast(err.message||'تعذّر حفظ المراجعة.')
+ }finally{btn.removeAttribute('data-busy');btn.classList.remove('busy')}}
+function refreshFlagPill(){const pill=document.getElementById('flagpill'),card=document.getElementById('flagcard');
+ if(!pill)return;
+ const open=flaggedEntries(myStudents()).filter(x=>!x.e.reviewed).length;
+ pill.className='pill '+(open?'off':'ok');
+ pill.innerHTML=open?'⚠ <span class="num">'+open+'</span>':'✓ راجعتها كلها';
+ if(card){card.classList.toggle('clear',!open);card.style.borderColor=open?'#F0D9DF':'#BFE0DA'}}
+
 /* ---------- العهدة ---------- */
 function loansView(){
  const all=reqList();
@@ -1708,7 +1739,7 @@ function loansView(){
     ?'<span class="avail have">بعهدة الطالب</span>'
     :`<button class="btn sm outline" onclick="confirmReturn('${r.code}','${r.id}')">استعدتها</button>`)).join('')
    :'<div class="empty">ما فيه نسخ خارج المكتبة.</div>'}</div></div>`}
- 
+
 /* ---------- تحدي الأسبوع ---------- */
 const METRICS={pages:{l:'صفحة',n:'الصفحات المقروءة'},minutes:{l:'دقيقة',n:'دقائق السماع'},
  both:{l:'نقطة',n:'مجموع الصفحات والدقائق'},days:{l:'يوم',n:'أيام تحقيق المقدار'}};
@@ -1866,7 +1897,7 @@ function saveChal(){const ti=$('#chtitle').value.trim();if(!ti){$('#chtitle').fo
  toast(editing?'حُدّث التحدي — التقدم المحتسب باقٍ كما هو.':'انطلق التحدي — يظهر الآن لكل الطلاب.')}
 function addDays(iso,n){const d=new Date(iso+'T00:00Z');d.setUTCDate(d.getUTCDate()+n);
  return d.toISOString().slice(0,10)}
- 
+
 /* ---------- المجموعات ونقل الطلاب ---------- */
 function groupsPanel(i){
  return `<div class="sec-title stagger" style="--i:${i}"><div>
@@ -1893,7 +1924,7 @@ function renameGroup(sup){const n=$('#gname').value.trim();if(!n){$('#gname').fo
  const v=SUPERVISORS.find(x=>x.code===sup),old=v.group;
  STUDENTS.forEach(s=>{if(s.supervisor===sup)s.group=n});v.group=n;
  S.modal=null;renderModal();lastKey='';renderShell();toast('«'+old+'» صارت «'+n+'»')}
- 
+
 /* ---------- تبويب الرفوف ---------- */
 let SHMODE='student';
 function setShMode(m){SHMODE=m;lastKey='';renderShell()}
@@ -1956,7 +1987,7 @@ function shelvesView(){
     <div class="shfoot"><span>${fin?`✓ ختم <span class="num" style="color:var(--teal)">${fin}</span> مقرر`:'ما ختم شيئًا بعد'}</span>
      <button class="btn sm outline" onclick="viewStudent('${s.code}')">صفحته</button></div>
    </div>`}).join('')}</div>`}
- 
+
 /* ---------- فريق الإشراف ---------- */
 function avatarLetter(n){const w=String(n).replace('أ. ','').trim().split(/\s+/);
  let t=(w[0]==='أبو'||w[0]==='أبا'||w[0]==='أم')?(w[1]||w[0]):w[0];
@@ -2004,7 +2035,7 @@ function peopleView(){
    <div style="margin-top:15px"><div style="font-size:11.5px;color:var(--muted)">رمز الدخول</div>
     <span class="codebox">${v.code}</span></div>
   </div>`).join(''):'<div class="card empty">لم يُضف مشرف متابع بعد.</div>'}</div>`}
- 
+
 /* ---------- المقررات ---------- */
 function coursesView(){
  const adopt=COURSES.map(c=>({c,n:STUDENTS.filter(s=>onOpenShelf(s.code,c.id)).length,
@@ -2057,7 +2088,7 @@ function coursesView(){
          <button class="qbtn del" onclick="askDeleteCourse('${c.id}')">حذف</button></span>`:''}</span></div>`}).join('')
      :'<div class="empty" style="padding:22px">ما فيه مقررات في هذا المجال.</div>'}
    </div>`}).join('')}</div>`}
- 
+
 /* ==================== النوافذ ==================== */
 function openEdit(eid){S.modal={t:'edit',eid};renderModal()}
 function saveEdit(){const e=ENTRIES.find(x=>x.id===S.modal.eid);if(!e)return closeModal();
@@ -2379,7 +2410,7 @@ function renderModal(){document.getElementById('modalRoot').innerHTML=modalHTML(
 function toast(msg){const r=document.getElementById('toastRoot');
  r.innerHTML=`<div class="toast">${esc(msg)}</div>`;clearTimeout(toast._t);
  toast._t=setTimeout(()=>r.innerHTML='',2400)}
- 
+
 /* ==================== العرض والحركة ==================== */
 let lastKey='';
 function readOnlyNotice(){return `<div class="nudge stagger" style="--i:0;margin-bottom:14px">👁 وضع الاطلاع فقط — يمكنك مشاهدة كامل البيانات، ولا يمكن لهذا الحساب إضافة أي بيانات أو تعديلها أو حذفها.</div>`}
@@ -2402,9 +2433,9 @@ function renderShell(){
 function moveTabInd(){const t=$('#tabs');if(!t)return;const a=t.querySelector('[aria-selected="true"]'),ind=$('#tabInd');
  if(!a||!ind)return;ind.style.width=a.offsetWidth+'px';
  ind.style.right=(t.scrollWidth-a.offsetLeft-a.offsetWidth)+'px';}
- 
- 
- 
+
+
+
 let _rz;addEventListener('resize',()=>{clearTimeout(_rz);_rz=setTimeout(moveTabInd,120)},{passive:true});
 /* موجة ضغط على كل الأزرار */
 document.addEventListener('pointerdown',e=>{
@@ -2422,4 +2453,3 @@ initRemote();
 </script>
 </body>
 </html>
- 
