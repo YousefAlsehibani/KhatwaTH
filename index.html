@@ -751,173 +751,107 @@ textarea:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 4px var(--
 .flagcard{transition:border-color .5s var(--ease)}
 .flagcard.clear .eyebrow::after{content:" · لا متبقٍ";color:var(--teal)}
 @media(max-width:560px){.flagrow .btn.sm.outline{display:none}}
-/* ==================== الوثبة ==================== */
-.wcard{position:relative;overflow:hidden;display:flex;gap:22px;align-items:flex-start;border-radius:20px;
- padding:22px 24px;margin:16px 0;color:#EFE9DA;
+/* ==================== مسار الوثبات ==================== */
+@keyframes trkin{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+@keyframes fillbar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes savedflash{0%{background:rgba(111,211,196,.26)}100%{background:transparent}}
+@keyframes markpop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.18)}100%{transform:scale(1);opacity:1}}
+.trk{position:relative;overflow:hidden;border-radius:20px;padding:22px 24px;margin:16px 0;color:#EFE9DA;
  background:linear-gradient(128deg,#1C170D 0%,#262012 46%,#13201C 100%);
  box-shadow:0 24px 46px -30px rgba(28,23,13,.85),inset 0 0 0 1px rgba(231,196,99,.14)}
-.wcard::before{content:"";position:absolute;width:340px;height:340px;border-radius:50%;top:-170px;right:-80px;
- background:radial-gradient(circle,rgba(231,196,99,.24),transparent 62%);pointer-events:none}
-.wcard>*{position:relative;z-index:1}
-.wbody{flex:1;min-width:0}
-.wcard h2{color:#fff;font-size:clamp(21px,3vw,27px);margin:9px 0 4px;line-height:1.3}
-.wtag{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;color:#E7C463;
+.trk::before{content:"";position:absolute;width:340px;height:340px;border-radius:50%;top:-180px;right:-90px;
+ background:radial-gradient(circle,rgba(231,196,99,.22),transparent 62%);pointer-events:none}
+.trk>*{position:relative;z-index:1}
+.trk.allin{background:linear-gradient(128deg,#11201C 0%,#16302A 55%,#0C3F39 100%)}
+.trk.allin::before{background:radial-gradient(circle,rgba(111,211,196,.24),transparent 62%)}
+.trkhead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.trktag{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;color:#E7C463;
  border:1px solid rgba(231,196,99,.38);border-radius:999px;padding:3px 12px}
-.wtag.live{background:rgba(231,196,99,.14)}
-.wtag.ok{color:#8FE0D1;border-color:rgba(111,211,196,.45);background:rgba(63,163,148,.16)}
-.livedot{width:7px;height:7px;border-radius:50%;background:#E7C463;box-shadow:0 0 0 0 rgba(231,196,99,.7);
- animation:livepulse 1.8s ease-out infinite}
-@keyframes livepulse{70%{box-shadow:0 0 0 7px rgba(231,196,99,0)}100%{box-shadow:0 0 0 0 rgba(231,196,99,0)}}
-.wmeta{margin:2px 0 0;font-size:13px;color:#B5AC98}
-.wmeta b{color:#fff;font-weight:600}
-.wdesc{margin:4px 0 0;font-size:13.5px;color:#C9C1AE;line-height:1.85;max-width:62ch}
-.wfacts{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:13px;font-size:12.5px;color:#B5AC98;align-items:center}
-.wfacts b{color:#E7C463;font-size:15px}
-.wlink{display:inline-flex;margin-top:13px;color:#E7C463;font-size:13.5px;font-weight:600;text-decoration:none;
- border-bottom:1px solid rgba(231,196,99,.4);padding-bottom:1px;transition:border-color .25s,color .25s}
-.wlink:hover{color:#fff;border-color:#fff}
-.wcard label{color:#B5AC98;margin:16px 0 7px}
-.wcard textarea{background:rgba(255,255,255,.06);border-color:rgba(231,196,99,.22);color:#fff;font-size:14.5px}
-.wcard textarea::placeholder{color:#8C846F}
-.wcard textarea:focus{border-color:#E7C463;box-shadow:0 0 0 4px rgba(231,196,99,.14)}
-.wsubmit{display:flex;align-items:center;gap:12px;margin-top:10px}
-.wcount{flex:1;font-size:11px;color:#8C846F}
-.wgo{width:auto;min-width:132px;background:#E7C463;color:#1C170D;font-weight:700;box-shadow:0 12px 26px -14px #E7C463}
-.wgo:hover{background:#F0D27E;box-shadow:0 16px 30px -14px #E7C463}
-.wgo:disabled{background:rgba(231,196,99,.22);color:#8C846F;box-shadow:none;transform:none;cursor:not-allowed}
-.btn.loading{color:transparent!important;pointer-events:none}
-.btn.loading::after{content:"";position:absolute;inset:50% auto auto 50%;width:17px;height:17px;margin:-8.5px 0 0 -8.5px;
- border-radius:50%;border:2.2px solid currentColor;border-color:#1C170D #1C170D transparent transparent;animation:spinr .7s linear infinite}
-@keyframes spinr{to{transform:rotate(360deg)}}
-.wnote{margin:10px 0 0;font-size:11.5px;color:#8C846F}
-.wben{margin:10px 0 0;padding:11px 15px;border-right:3px solid #E7C463;background:rgba(255,255,255,.05);
- border-radius:10px;font-size:14px;color:#EFE9DA;line-height:1.85}
-.wcard.done{background:linear-gradient(128deg,#18201C 0%,#1E2721 60%,#232A22 100%)}
-.wcard.done::before{background:radial-gradient(circle,rgba(111,211,196,.16),transparent 62%)}
-.wcard.soon .wbody{padding-top:2px}
+.trk.allin .trktag{color:#8FE0D1;border-color:rgba(111,211,196,.45)}
+.trk h2{color:#fff;font-size:clamp(20px,3vw,26px);margin:10px 0 3px;line-height:1.3}
+.trksub{margin:0;font-size:13px;color:#B5AC98;line-height:1.8}
+.trksub b{color:#E7C463}
+.trkdays{text-align:left;flex:none}
+.trkdays .d{font-family:"IBM Plex Mono",monospace;font-size:34px;font-weight:600;color:#E7C463;line-height:1}
+.trkdays .l{font-size:11.5px;color:#93A69F}
+.trkdays .dn{font-size:11px;color:#8C846F;margin-top:5px}
+.trkrows{margin-top:18px;display:flex;flex-direction:column;gap:3px}
+.trkrow{display:flex;gap:13px;padding:13px 2px;border-top:1px solid rgba(255,255,255,.08)}
+.trkrow:first-child{border-top:0}
+.stagger.in .trkrow{animation:trkin .55s var(--ease) both;animation-delay:calc(var(--k)*90ms + 160ms)}
+.trknum{width:26px;height:26px;border-radius:9px;flex:none;display:grid;place-items:center;
+ background:rgba(255,255,255,.08);color:#B5AC98;font-size:12.5px;font-weight:600;margin-top:2px}
+.trkrow.done .trknum{background:rgba(111,211,196,.2);color:#8FE0D1;animation:markpop .5s var(--spring)}
+.trkrow.behind .trknum{background:rgba(231,196,99,.18);color:#E7C463}
+.trkbody{flex:1;min-width:0}
+.trktop{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.trktop b{font-size:15px;font-weight:600;color:#fff}
+.trkst{font-size:11px;font-weight:600;white-space:nowrap;color:#93A69F}
+.trkrow.done .trkst{color:#8FE0D1}
+.trkrow.ahead .trkst{color:#8FE0D1}
+.trkrow.behind .trkst{color:#E7C463}
+/* الشريط: التعبئة تقدّمه، والعلامة الرأسية موضعه المتوقَّع اليوم */
+.trkbar{position:relative;height:9px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden;margin-top:9px}
+.trkbar i{display:block;height:100%;width:0;border-radius:99px;
+ background:linear-gradient(90deg,#C08A1E,#E7C463);transition:width 1.1s var(--ease)}
+.trkrow.done .trkbar i,.trkrow.ahead .trkbar i{background:linear-gradient(90deg,#2F8C7F,#6FD3C4)}
+.trkbar u{position:absolute;top:-3px;bottom:-3px;width:2px;background:rgba(255,255,255,.55);border-radius:2px}
+.trkrow.done .trkbar u{display:none}
+.trkmeta{margin-top:8px;font-size:12px;color:#A49B86;line-height:1.7}
+.trkmeta b{color:#E7C463;font-family:"IBM Plex Mono",monospace}
+.trkrow.ahead .trkmeta b,.trkrow.done .trkmeta b{color:#8FE0D1}
+.trkdot{margin:0 6px;opacity:.5}
+.trkact{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:9px}
+.trklink{color:#E7C463;font-size:12px;font-weight:600;text-decoration:none;
+ border-bottom:1px solid rgba(231,196,99,.35);padding-bottom:1px;transition:.25s var(--ease)}
+.trklink:hover{color:#fff;border-color:#fff}
+.trkby{font-size:11.5px;color:#8C846F}
+.trkgo{border:1px solid rgba(231,196,99,.45);background:rgba(231,196,99,.1);color:#E7C463;
+ border-radius:10px;padding:5px 13px;font-size:12px;font-weight:600;transition:.25s var(--ease)}
+.trkgo:hover{background:#E7C463;color:#1C170D;transform:translateY(-2px)}
+.trknote{margin:16px 0 0;padding-top:13px;border-top:1px solid rgba(255,255,255,.1);
+ font-size:12.5px;color:#A49B86}
+.trknote b{color:#E7C463;font-family:"IBM Plex Mono",monospace;font-size:14px}
+.trk.mini{padding:18px 20px}
+.trk.mini h2{font-size:19px}
+.trk.mini .trkrow{padding:9px 2px}
+.trk.mini .trkbar{height:7px;margin-top:7px}
 
-/* الدرجات والقوس — المتحرك الوحيد: النقطة */
-.wart{position:relative;width:120px;height:96px;flex:none;margin-top:4px}
-.wart svg{width:120px;height:96px;display:block;overflow:visible}
-.wart .st{fill:#E7C463}
-.wart .st1{opacity:.28}.wart .st2{opacity:.55}.wart .st3{opacity:.9}
-.wart .arc{fill:none;stroke:#E7C463;stroke-width:1.6;stroke-dasharray:3 5;opacity:.5}
-.wcard.soon .wart .arc{animation:arcflow 2.4s linear infinite}
-@keyframes arcflow{to{stroke-dashoffset:-16}}
-.wdot{position:absolute;left:0;top:0;width:13px;height:13px;border-radius:50%;background:#fff;
- offset-path:path('M98 62 C 88 -10, 34 -10, 22 20');offset-distance:0%;offset-rotate:0deg;
- box-shadow:0 0 0 4px rgba(231,196,99,.25),0 0 18px rgba(231,196,99,.7)}
-.wcard.soon .wdot{animation:bob 2.2s ease-in-out infinite}
-@keyframes bob{50%{translate:0 -4px}}
-.wcard.open .wdot{animation:ready 1.4s ease-in-out infinite}
-@keyframes ready{50%{box-shadow:0 0 0 7px rgba(231,196,99,.12),0 0 26px rgba(231,196,99,.95);scale:1.12}}
-.wcard.done .wdot{offset-distance:100%;background:#8FE0D1;box-shadow:0 0 0 4px rgba(111,211,196,.25),0 0 16px rgba(111,211,196,.6)}
-.wcard.done .st{fill:#6FD3C4}.wcard.done .arc{stroke:#6FD3C4;stroke-dasharray:none;opacity:.35}
-/* القفزة نفسها: منحنى صعود سريع وهبوط ناعم، ثم ارتداد خفيف عند الهبوط */
-.wcard.leaping .wdot{animation:leap .62s cubic-bezier(.33,.9,.35,1) forwards,land .38s var(--spring) .6s}
-@keyframes leap{from{offset-distance:0%}to{offset-distance:100%}}
-@keyframes land{0%{scale:1.35 .7}100%{scale:1}}
-.wcard.leaping .wart .arc{stroke-dasharray:none;opacity:.9;transition:opacity .3s}
-.wcard.leaping .st3{animation:stepglow .7s ease-out .55s}
-@keyframes stepglow{50%{opacity:1;filter:drop-shadow(0 0 10px #E7C463)}}
-.wcard.revealing{animation:wreveal .9s var(--spring) both}
-@keyframes wreveal{from{clip-path:inset(0 0 100% 0 round 20px);opacity:.3}to{clip-path:inset(0 0 0 0 round 20px);opacity:1}}
-
-/* العدّاد: أرقام تنقلب عند التغيّر فقط */
-.clk{display:flex;gap:10px;margin-top:15px;direction:rtl}
-.cu{display:flex;flex-direction:column;align-items:center;gap:3px}
-.cu i{font-style:normal;font-size:10.5px;color:#8C846F}
-.cd{display:flex;gap:3px;direction:ltr}
-.dg{display:grid;place-items:center;width:27px;height:37px;border-radius:8px;background:rgba(255,255,255,.07);
- box-shadow:inset 0 -1px 0 rgba(0,0,0,.35);font-family:"IBM Plex Mono",monospace;font-size:21px;font-weight:600;color:#fff}
-.clk.nod .cu-d{display:none}
-.dg.fa{animation:flipa .42s var(--ease)}.dg.fb{animation:flipb .42s var(--ease)}
-@keyframes flipa{from{transform:rotateX(90deg);opacity:.2}to{transform:none;opacity:1}}
-@keyframes flipb{from{transform:rotateX(90deg);opacity:.2}to{transform:none;opacity:1}}
-.clk.mini{display:inline-flex;gap:5px;margin:0 3px;vertical-align:middle}
-.clk.mini .cu{flex-direction:row;gap:2px}
-.clk.mini .cu i{display:none}
-.clk.mini .cu+.cu::before{content:":";color:#8C846F;font-family:"IBM Plex Mono",monospace;margin-left:3px}
-.clk.mini .dg{width:auto;height:auto;background:none;box-shadow:none;font-size:13.5px;color:#E7C463}
-.clk.mini .cu-s{display:none}
-
-/* القصاصات */
-.burst{position:absolute;inset:50% auto auto 50%;width:0;height:0;pointer-events:none;z-index:5}
-.burst i{position:absolute;width:7px;height:10px;border-radius:2px;left:-3.5px;top:-5px;opacity:0;
- animation:confetti 1.05s cubic-bezier(.15,.7,.3,1) forwards}
-@keyframes confetti{0%{opacity:1;transform:translate(0,0) rotate(0) scale(.6)}
- 70%{opacity:1}100%{opacity:0;transform:translate(var(--x),calc(var(--y) + 26px)) rotate(var(--r)) scale(1)}}
-
-.wlock{font-size:13px;opacity:.7;width:28px;text-align:center}
-
-/* لوحة الوثبات */
-.wrowx{display:flex;align-items:flex-start;gap:12px;padding:13px 2px;border-bottom:1px solid var(--line)}
-.wrowx:last-child{border-bottom:0}
-.wst{width:10px;height:10px;border-radius:50%;margin-top:8px;flex:none;background:#CFD6CF}
-.wst.soon{background:var(--gold-soft);box-shadow:inset 0 0 0 2px var(--gold)}
-.wst.open{background:var(--gold);box-shadow:0 0 0 4px var(--gold-soft)}
-.wrowx .meta b{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.wprog{display:flex;align-items:center;gap:9px;margin-top:8px;max-width:340px}
-.wprog .bar{flex:1;height:6px}
-.wprog small{font-size:11.5px;color:var(--muted);white-space:nowrap}
-
-/* بطاقات السحب */
-.tickrow{display:flex;align-items:center;gap:12px;margin-top:14px;padding-top:13px;border-top:1px solid rgba(255,255,255,.1);font-size:13px}
-.tickrow b{color:#E7C463;font-size:16px}
-.tickrow small{display:block;font-size:11px;color:#93A69F}
-.tix{display:inline-flex;align-items:center;flex:none}
-.tix i{width:15px;height:21px;border-radius:3px;background:linear-gradient(160deg,#F0D27E,#C08A1E);
- margin-left:-6px;box-shadow:0 2px 5px rgba(0,0,0,.25),inset 0 0 0 1px rgba(255,255,255,.35);
- transform:rotate(calc(var(--t)*3deg - 6deg))}
-.tix i:first-child{margin-left:0}
-.tix i.ghost{background:none;border:1.5px dashed rgba(231,196,99,.45);box-shadow:none;transform:none}
-.stagger.in .tix i{animation:tixin .5s var(--spring) both;animation-delay:calc(var(--t)*45ms + 300ms)}
-@keyframes tixin{from{opacity:0;transform:translateY(-10px) rotate(-20deg)}}
-.rafgrid{margin-top:12px}
-.rafrow{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
-.rafrow:last-child{border-bottom:0}
-.rafrow .rn{flex:1;min-width:0;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rafrow .tix i{width:11px;height:16px;margin-left:-4px}
-.rafrow .rv{width:26px;text-align:left;font-weight:600;color:var(--gold)}
-.rafrow .rp{width:40px;text-align:left;font-size:12px;color:var(--muted)}
-.rafgo{background:var(--gold);box-shadow:0 10px 24px -14px var(--gold)}
-.rafgo:hover{background:#D09A2A}
-
-/* لحظة السحب */
-.drawov{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:20px;
- background:radial-gradient(ellipse at 50% 40%,#2A2211 0%,#0E1512 70%);animation:fadein .35s}
-.drawov.out{animation:fadeout .26s var(--ease) forwards}
-.drawbox{text-align:center;width:100%;max-width:560px}
-.drawk{color:#E7C463;font-size:13px;margin:0 0 18px}
-.slot{position:relative;height:110px;display:grid;place-items:center;overflow:visible;
- border-top:1px solid rgba(231,196,99,.25);border-bottom:1px solid rgba(231,196,99,.25)}
-.slotname{font-family:"Zain",sans-serif;font-weight:800;font-size:clamp(34px,8vw,56px);color:#fff;line-height:1}
-.slotname.sa{animation:slota .12s linear}.slotname.sb{animation:slotb .12s linear}
-@keyframes slota{from{transform:translateY(-40%);opacity:.3}}
-@keyframes slotb{from{transform:translateY(-40%);opacity:.3}}
-.slotname.win{color:#E7C463;animation:winin .8s var(--spring);text-shadow:0 0 34px rgba(231,196,99,.55)}
-@keyframes winin{0%{transform:scale(.6);opacity:0}100%{transform:none;opacity:1}}
-.drawsub{color:#B5AC98;font-size:14px;margin:18px 0 0}
-.drawsub b{color:#fff}
-.drawact{display:flex;gap:10px;justify-content:center;margin-top:24px}
-.drawact .btn{width:auto;padding:12px 22px}
-.drawact .btn.outline{color:#E7C463;border-color:rgba(231,196,99,.4)}
-.drawact .btn:not(.outline){background:#E7C463;color:#1C170D}
-
-/* الفوائد */
-.benlist{display:flex;flex-direction:column;gap:9px;margin-top:12px}
-.benitem{margin:0;padding:12px 14px;border-radius:12px;background:#F7F9F6;border:1px solid var(--line);
- animation:rise .5s var(--ease) both;animation-delay:calc(var(--k)*50ms)}
-.benitem blockquote{margin:0;font-size:14px;line-height:1.85}
-.benitem figcaption{margin-top:6px;font-size:12px;color:var(--teal);font-weight:600}
-.benitem figcaption span{color:var(--muted);font-weight:400}
-.spin{display:inline-block;width:22px;height:22px;border-radius:50%;border:2.5px solid var(--teal-soft);border-top-color:var(--teal);animation:spinr .7s linear infinite}
-
+/* شاشة التسميع */
+.reclist{margin-top:12px}
+.recrow{display:flex;align-items:center;gap:12px;padding:11px 8px;border-bottom:1px solid var(--line);
+ border-radius:10px;transition:background .3s var(--ease)}
+.recrow:last-child{border-bottom:0}
+.recrow.saved{animation:savedflash 1.1s var(--ease)}
+.recrow.fin{background:linear-gradient(90deg,var(--teal-soft),transparent 72%)}
+.recav{width:34px;height:34px;border-radius:11px;flex:none;display:grid;place-items:center;color:#fff;
+ font-family:"Zain",sans-serif;font-weight:800;font-size:16px;background:linear-gradient(145deg,var(--teal),#0F3F3A)}
+.recnm{flex:1;min-width:0}
+.recnm b{display:block;font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.recnm small{font-size:11.5px;color:var(--muted)}
+.recbar{width:92px;height:6px;border-radius:99px;background:#EFF1EE;overflow:hidden;flex:none}
+.recbar i{display:block;height:100%;background:linear-gradient(90deg,#0E766C,#0B5C55);border-radius:99px;
+ transition:width .6s var(--spring)}
+.recinp{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);flex:none}
+.recinp input{width:66px;padding:7px 9px;text-align:center;font-family:"IBM Plex Mono",monospace;
+ font-size:15px;font-weight:600;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);
+ transition:.25s var(--ease)}
+.recinp input:focus{border-color:var(--teal);outline:none;box-shadow:0 0 0 4px var(--teal-soft)}
+.recinp input:disabled{opacity:.5}
+.recval{width:66px;text-align:center;font-size:15px;font-weight:600;color:var(--teal)}
+.recpill{flex:none;width:52px;text-align:left;font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--muted)}
+.recpill.ok{color:var(--teal);font-weight:700;font-family:"IBM Plex Sans Arabic"}
+.cellbar{display:block;width:54px;height:5px;border-radius:99px;background:#EFF1EE;overflow:hidden}
+.cellbar i{display:block;height:100%;border-radius:99px;background:var(--gold)}
+.cellbar.done i,.cellbar.ahead i{background:var(--teal)}
+.cellbar.behind i{background:#D8A33A}
+td small.num{font-size:10.5px;color:var(--muted);display:block;margin-top:4px}
 @media(max-width:620px){
- .wcard{flex-direction:column;gap:6px;padding:20px}
- .wart{transform:scale(.8);transform-origin:right top;height:78px;margin-bottom:-4px}
- .dg{width:24px;height:33px;font-size:19px}
- .wsubmit .wgo{flex:1}}
+ .trk{padding:19px}
+ .trkact{gap:9px}
+ .recrow{flex-wrap:wrap;gap:9px}
+ .recbar{order:5;width:100%}
+ .recnm{flex:1 1 120px}}
 @media(max-width:760px){.chalcard{padding:20px}}
 @media(max-width:760px){.shcards{grid-template-columns:1fr}}
 @media(max-width:760px){.hero{padding:20px}.matrix{min-width:560px}}
@@ -946,7 +880,7 @@ const PERSONAL_FIELD={id:'personal',name:'خارج المقررات',desc:'اخ�
 let PERSONAL_COURSES=[];
 /* الوثبات: مقرر مخفي لكل وثبة يُحتسب في الإنجاز كأي تسجيل. */
 const WATHBA_FIELD={id:'wathba',name:'وثبة',desc:'مادة الوثبة',c:'var(--gold)'};
-let WATHBAS=[],WDONE=[],WDRAFT={},W_SEEN={};
+let WATHBAS=[],WDONE=[],WMEM=[];
 let COURSES=[];
 let ARCHIVED_COURSES=[];
 let STUDENTS=[];
@@ -1056,9 +990,11 @@ function hydrateRemote(state){
  LEADERBOARD=state.leaderboard||[];CHAL_BOARD=state.challenge_board||[];
  /* الأوقات تُحوَّل لأرقام مرة واحدة هنا — العدّاد يقارن أرقامًا كل ثانية لا نصوصًا. */
  WATHBAS=(state.wathbas||[]).map(x=>({id:x.id,course:x.course_id,type:x.course_type,amount:+x.amount,
-  teaser:x.teaser||'',opens:Date.parse(x.opens_at),closes:Date.parse(x.closes_at),
-  title:x.title||'',desc:x.description||'',url:x.resource_url||'',done:+x.done_count||0}));
+  unit:x.unit||'page',unitMin:+x.unit_minutes||1,bySup:!!x.by_supervisor,sort:+x.sort||0,
+  opens:Date.parse(x.opens_at),closes:Date.parse(x.closes_at),
+  title:x.title||'',desc:x.description||'',url:x.resource_url||''}));
  WDONE=(state.wathba_done||[]).map(x=>({w:x.wathba_id,code:x.public_code,day:x.done_day,benefit:x.benefit||''}));
+ WMEM=(state.memorize||[]).map(x=>({w:x.wathba_id,code:x.public_code,verses:+x.verses,by:x.by||'',at:x.at}));
  reindex();
  return ps.find(x=>x.public_code===state.me?.public_code)||state.me
 }
@@ -1174,10 +1110,11 @@ function courseProgress(code,c){return CTOT[code+'|'+c.id]||0}
 function shelfOf(code){const s2=studentByCode(code);return (s2&&s2.shelf)||[]}
 function onShelf(code,id){return shelfOf(code).indexOf(id)>-1}
 function isDone(code,c){return courseProgress(code,c)>=c.total}
-function openShelfOf(code){return shelfOf(code).filter(id=>{const c=courseById(id);return c&&!isDone(code,c)})}
+function openShelfOf(code){return shelfOf(code).filter(id=>{const c=courseById(id);
+ return c&&c.field!=='wathba'&&!isDone(code,c)})}
 const onOpenShelf=(code,id)=>openShelfOf(code).indexOf(id)>-1;
 function shelfCourses(code,type){return shelfOf(code).map(courseById)
- .filter(c=>c&&c.type===type&&!isDone(code,c))}
+ .filter(c=>c&&c.field!=='wathba'&&c.type===type&&!isDone(code,c))}
 function finishedCourses(code){return COURSES.concat(personalCoursesOf(code))
  .filter(c=>courseProgress(code,c)>=c.total&&courseProgress(code,c)>0)}
 function startCourse(id,quiet){const me=S.me,c=courseById(id);
@@ -1375,13 +1312,12 @@ function todayView(){
    ${(()=>{const list=entriesOf(me.code,todayISO());if(!list.length)return '';
      return `<div class="todaylog"><div class="tlh">تسجيلات اليوم
        <span>تقدر تصحّحها أو تحذفها حتى ٣:٠٠ فجرًا</span></div>
-      ${list.map(e=>{const c=courseById(e.course),f=fieldById(c.field),isW=c.field==='wathba';
+      ${list.map(e=>{const c=courseById(e.course),f=fieldById(c.field);
        return `<div class="tent"><span class="dot" style="background:${f.c}"></span>
-        <span class="tenm">${esc(c.title)}</span>
+        <span class="tenm">${esc(c.title)}${c.field==='wathba'?' <span class="wtagmini">وثبة</span>':''}</span>
         <span class="tenv num">${e.pages||e.minutes} ${e.pages?'ص':'د'}</span>
-        ${isW?'<span class="wlock" title="تسجيل الوثبة ثابت">⚡</span>'
-         :`<button class="qbtn" onclick="openEdit('${e.id}')" title="تصحيح">✎</button>
-        <button class="qbtn del" onclick="delEntry('${e.id}')" title="حذف">✕</button>`}</div>`}).join('')}
+        <button class="qbtn" onclick="openEdit('${e.id}')" title="تصحيح">✎</button>
+        <button class="qbtn del" onclick="delEntry('${e.id}')" title="حذف">✕</button></div>`}).join('')}
       </div>`})()}
   </div>
   ${stairsCard(me,1)}
@@ -1403,8 +1339,7 @@ function todayView(){
      ${r.st==='pending'?`<button class="btn sm outline" onclick="rejectReq('${me.code}','${r.id}')">ألغِ الحجز</button>`:''}
     </div>`}).join('')})()}
  ${wathbaCardStudent(2)}
- ${chalCardStudent(2)}
- ${shelfSection('read',3)}
+  ${shelfSection('read',3)}
  ${shelfSection('listen',7)}
  ${fin.length?`<div class="sec-title stagger" style="--i:10"><h2>ختمتَها</h2>
    <span class="chip"><span class="num">${fin.length}</span> مقرر</span></div>
@@ -1729,7 +1664,7 @@ function studentsView(){
    <span><b>${idle.length}</b> ${idle.length===1?'طالب يحتاج':'طلاب يحتاجون'} متابعة — ما سجّلوا إنجاز من يومين أو أكثر.</span>
    <span class="spacer"></span>
    <button class="btn sm outline" onclick="setFilter('idle')">اعرضهم</button></div>`:''}
- ${S.role==='supervisor'?chalCardSupervisor(1)+wathbaPanel(1,true):''}
+ ${S.role==='supervisor'?wathbaSupervisorNote(1):''}
  ${flagCard(all,2)}
  ${matrixCard(all,3)}
  ${S.role==='admin'||S.role==='observer'?groupsCard(3):''}
@@ -2091,257 +2026,238 @@ function saveChal(){const ti=$('#chtitle').value.trim();if(!ti){$('#chtitle').fo
 function addDays(iso,n){const d=new Date(iso+'T00:00Z');d.setUTCDate(d.getUTCDate()+n);
  return d.toISOString().slice(0,10)}
 
-/* ==================== الوثبة ==================== */
-const RAFFLE_BONUS=3;
-const wState=w=>{const n=Date.now();return n<w.opens?'soon':n<w.closes?'open':'closed'};
-const wUnit=w=>w.type==='read'?'صفحة':'دقيقة';
-const wDoneBy=(id,code)=>WDONE.find(x=>x.w===id&&x.code===code);
+/* ==================== مسار الوثبات ====================
+   ثلاث وثبات بنافذة واحدة (أسبوعان). القراءة والسماع يسجّلهما الطالب،
+   والحفظ يكتبه المشرف بعد التسميع. المقياس المعروض هو الوتيرة لا النسبة:
+   النسبة وحدها لا تخبر الطالب بشيء، والوتيرة تخبره بما يفعله اليوم. */
+/* تمييز العدد في العربية: مفرد / مثنى / جمع (٣-١٠) / مفرد منصوب (١١ فأكثر) */
+const UNIT={page:['صفحة','صفحتان','صفحات','صفحة'],video:['مقطع','مقطعان','مقاطع','مقطعًا'],
+            verse:['بيت','بيتان','أبيات','بيتًا']};
+const uname=(u,n)=>{const f=UNIT[u];n=Math.abs(+n||0);
+ return n===1?f[0]:n===2?f[1]:n<11?f[2]:f[3]};
+/* مع المثنى لا يُذكر العدد: «بيتان» لا «٢ بيتان» */
+const ucount=(u,n)=>Math.abs(+n||0)===2?uname(u,2):n+' '+uname(u,n);
 const WEEK=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-/* موعد مقروء بتوقيت الرياض مهما كان توقيت جهاز القارئ */
+const wOpen=()=>WATHBAS.filter(w=>Date.now()>=w.opens&&Date.now()<w.closes);
+const wTrack=()=>wOpen().slice().sort((a,b)=>a.sort-b.sort);
+const wClosesAt=()=>{const t=wTrack();return t.length?Math.max(...t.map(w=>w.closes)):0};
+const memOf=(wid,code)=>WMEM.find(x=>x.w===wid&&x.code===code);
 function fmtWhen(ms){const d=new Date(ms+TZ*3600000),h=d.getUTCHours(),m=d.getUTCMinutes();
  const today=todayISO(),iso=new Date(ms+TZ*3600000-DAY_START*3600000).toISOString().slice(0,10);
  const day=iso===today?'اليوم':iso===addDays(today,1)?'غدًا':WEEK[d.getUTCDay()];
  const h12=h%12||12,per=h<12?'صباحًا':h<17?'ظهرًا':'مساءً';
  return day+' '+h12+(m?':'+String(m).padStart(2,'0'):'')+' '+per}
-function studentWathba(){
- const byOpen=(a,b)=>a.opens-b.opens,me=S.me.code;
- const open=WATHBAS.filter(w=>wState(w)==='open').sort((a,b)=>a.closes-b.closes);
- const todo=open.find(w=>!wDoneBy(w.id,me));if(todo)return todo;
- const soon=WATHBAS.filter(w=>wState(w)==='soon').sort(byOpen)[0];if(soon)return soon;
- return open[0]||WATHBAS.find(w=>wDoneBy(w.id,me)&&Date.now()-w.closes<20*36e5)||null}
-function ticketsOf(code){
- if(!chalOn())return{w:0,bonus:0,total:0};
- const w=WDONE.filter(x=>x.code===code&&x.day>=CHALLENGE.start&&x.day<=CHALLENGE.end).length;
- const bonus=chalProgress(code)>=CHALLENGE.target?RAFFLE_BONUS:0;
- return{w,bonus,total:w+bonus}}
 
-/* ── العدّاد: مؤقّت واحد لكل الصفحة، يلمس الأرقام المتغيّرة فقط، ويتوقف إذا خفيت الصفحة ── */
-let TICKER=null;
-const CLK_UNITS=[['d','يوم'],['h','ساعة'],['m','دقيقة'],['s','ثانية']];
-function splitMs(ms){const t=Math.max(0,Math.floor(ms/1000));
- return{d:Math.floor(t/86400),h:Math.floor(t%86400/3600),m:Math.floor(t%3600/60),s:t%60}}
-function clockHTML(until,compact){const v=splitMs(until-Date.now());
- return `<span class="clk ${compact?'mini':''} ${v.d?'':'nod'}" data-until="${until}" role="timer" aria-live="off">${CLK_UNITS.map(([k,l])=>{
-  const s=String(Math.min(99,v[k])).padStart(2,'0');
-  return `<span class="cu cu-${k}"><span class="cd"><b class="dg">${s[0]}</b><b class="dg">${s[1]}</b></span><i>${l}</i></span>`}).join('')}</span>`}
-function paintClock(el,ms){const v=splitMs(ms);el.classList.toggle('nod',!v.d);
- for(const [k] of CLK_UNITS){const ds=el.querySelectorAll('.cu-'+k+' .dg'),s=String(Math.min(99,v[k])).padStart(2,'0');
-  for(let i=0;i<2;i++){const d=ds[i];if(!d||d.textContent===s[i])continue;d.textContent=s[i];
-   /* تبديل بين صنفين متطابقين يعيد تشغيل الحركة بلا إجبار المتصفح على إعادة التخطيط */
-   if(!reduced)d.className='dg '+(d.classList.contains('fa')?'fb':'fa')}}}
-function tick(){
- const nodes=document.querySelectorAll('[data-until]');
- if(!nodes.length){clearInterval(TICKER);TICKER=null;return}
- if(document.hidden)return;
- const now=Date.now();let crossed=false;
- nodes.forEach(el=>{const left=+el.dataset.until-now;left<=0?crossed=true:paintClock(el,left)});
- if(crossed){clearInterval(TICKER);TICKER=null;
-  /* نزلت الوثبة أو أُقفلت: المادة محجوبة حتى الموعد، فنجلبها الآن */
-  refreshState()}}
-function startTicker(){if(!TICKER&&document.querySelector('[data-until]')){TICKER=setInterval(tick,1000)}}
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&S.role){tick();startTicker()}});
+/* تقدّم الطالب في وثبة، بوحدتها المعروضة لا بوحدة التخزين */
+function wProgress(w,code){
+ if(w.bySup){const m=memOf(w.id,code);return m?m.verses:0}
+ const raw=CTOT[code+'|'+w.course]||0;
+ return w.unit==='video'?Math.floor(raw/Math.max(1,w.unitMin)):raw}
+/* الوتيرة: كم يلزمه يوميًا ليختم في ما تبقّى — وهذا الرقم وحده يمنع التراكم */
+function wPace(w,code){
+ const done=wProgress(w,code),left=Math.max(0,w.amount-done);
+ const total=Math.max(1,Math.round((w.closes-w.opens)/864e5));
+ const passed=Math.min(total,Math.max(0,Math.ceil((Date.now()-w.opens)/864e5)));
+ const daysLeft=Math.max(1,total-passed+1);
+ const should=Math.round(w.amount*passed/total);   /* المتوقَّع الآن لو مشى بانتظام */
+ return{done,left,total,passed,daysLeft,should,
+  per:Math.ceil(left/daysLeft),
+  diff:done-should,
+  pct:pct(done,w.amount),
+  state:done>=w.amount?'done':done>=should?(done>should?'ahead':'ontime'):'behind'}}
+const wAllDone=code=>{const t=wTrack();return t.length>0&&t.every(w=>wProgress(w,code)>=w.amount)};
+const wCandidates=()=>STUDENTS.filter(s=>wAllDone(s.code));
 
-/* ── فن الوثبة: الدرجات من شعار «خطوة»، والقوس هو القفزة فوقها ── */
-const LEAP_PATH='M98 62 C 88 -10, 34 -10, 22 20';
-function leapArt(){return `<div class="wart" aria-hidden="true">
-  <svg viewBox="0 0 120 96">
-   <rect x="84" y="70" width="28" height="22" rx="5" class="st st1"/>
-   <rect x="46" y="48" width="28" height="44" rx="5" class="st st2"/>
-   <rect x="8"  y="26" width="28" height="66" rx="5" class="st st3"/>
-   <path d="${LEAP_PATH}" class="arc"/>
-  </svg><span class="wdot"></span></div>`}
-
+/* ── بطاقة الطالب ── */
 function wathbaCardStudent(i){
- if(S.role!=='student'||!WATHBAS.length)return '';
- const w=studentWathba();if(!w)return '';
- const st=wState(w),mine=wDoneBy(w.id,S.me.code),u=wUnit(w),verb=w.type==='read'?'قراءة':'سماع';
- const prev=W_SEEN[w.id];W_SEEN[w.id]=mine?'done':st;
- const reveal=prev==='soon'&&st==='open'&&!reduced?' revealing':'';
- if(st==='soon')return `<section class="wcard soon stagger" style="--i:${i}">
-   ${leapArt()}
-   <div class="wbody"><span class="wtag">وثبة قادمة</span>
-    <h2>${esc(w.teaser||'وثبة جديدة في الطريق')}</h2>
-    <p class="wmeta"><b class="num">${w.amount}</b> ${u} ${verb} · تنزل ${fmtWhen(w.opens)}</p>
-    ${clockHTML(w.opens)}</div></section>`;
- if(mine)return `<section class="wcard done stagger" style="--i:${i}">
-   ${leapArt()}
-   <div class="wbody"><span class="wtag ok">✓ وثبت</span><h2>${esc(w.title)}</h2>
-    ${mine.benefit?`<blockquote class="wben">${esc(mine.benefit)}</blockquote>`:''}
-    <p class="wmeta">+١ بطاقة في سحب التحدي · <b class="num">${w.done}</b> وثبوا حتى الآن</p></div></section>`;
- if(st!=='open')return '';
- const draft=WDRAFT[w.id]||'';
- return `<section class="wcard open stagger${reveal}" style="--i:${i}" id="wc_${w.id}">
-   ${leapArt()}
-   <div class="wbody"><span class="wtag live"><i class="livedot"></i>الوثبة نازلة</span>
-    <h2>${esc(w.title)}</h2>
-    ${w.desc?`<p class="wdesc">${esc(w.desc)}</p>`:''}
-    <div class="wfacts">
-     <span><b class="num">${w.amount}</b> ${u} ${verb}</span>
-     <span>تُقفل بعد ${clockHTML(w.closes,1)}</span>
-     <span><b class="num">${w.done}</b> وثبوا</span></div>
-    ${w.url?`<a class="wlink" href="${esc(w.url)}" target="_blank" rel="noopener noreferrer">افتح المادة ↗</a>`:''}
-    <label for="wben">فائدة خرجت بها</label>
-    <textarea id="wben" rows="2" maxlength="500" placeholder="سطر واحد يكفي — وش بقي معك؟"
-      oninput="wbenInput(this,'${w.id}')">${esc(draft)}</textarea>
-    <div class="wsubmit"><span class="wcount num" id="wcount">${draft.length}/500</span>
-     <button class="btn wgo" id="wgo" onclick="doWathba('${w.id}',this)" ${draft.trim().length<8?'disabled':''}>وثبت</button></div>
-    <p class="wnote">تُضاف ${w.amount} ${u} لإنجاز اليوم، وتدخل بها السحب.</p></div></section>`}
-function wbenInput(el,id){WDRAFT[id]=el.value;
- const c=document.getElementById('wcount'),b=document.getElementById('wgo');
- if(c)c.textContent=el.value.length+'/500';if(b)b.disabled=el.value.trim().length<8}
-
-/* لحظة الإنجاز: النقطة تقفز فوق الدرجات، ثم تتناثر قصاصات. تُحلّ بعد الهبوط لنعيد الرسم. */
-function celebrate(card){return new Promise(res=>{
- if(!card||reduced)return res();
- card.classList.add('leaping');
- setTimeout(()=>{burst(card.querySelector('.wart')||card,26)},560);
- setTimeout(res,1150)})}
-function burst(host,n){const box=document.createElement('span');box.className='burst';
- const cols=['#E7C463','#6FD3C4','#fff','#C08A1E','#3FA394'];
- for(let k=0;k<n;k++){const p=document.createElement('i'),a=(Math.PI*2*k/n)+(Math.random()-.5)*.5,r=46+Math.random()*58;
-  p.style.cssText=`--x:${(Math.cos(a)*r).toFixed(1)}px;--y:${(Math.sin(a)*r-18).toFixed(1)}px;`+
-   `--r:${Math.round(Math.random()*540-270)}deg;background:${cols[k%cols.length]};animation-delay:${(Math.random()*70)|0}ms`;
-  box.appendChild(p)}
- host.appendChild(box);setTimeout(()=>box.remove(),1300)}
-async function doWathba(id,btn){
- if(btn.dataset.busy)return;
- const b=(WDRAFT[id]||'').trim();if(b.length<8)return toast('اكتب فائدة خرجت بها — سطر قصير يكفي.');
- btn.dataset.busy='1';btn.classList.add('loading');
- try{const {data,error}=await SB.rpc('complete_wathba',{p_wathba:id,p_benefit:b});if(error)throw error;
-  await celebrate(btn.closest('.wcard'));
-  delete WDRAFT[id];applyState(data.state);toast(data.message||'وثبت!')
- }catch(e){btn.removeAttribute('data-busy');btn.classList.remove('loading');toast(e.message||'تعذّر الحفظ.')}}
-
-/* ── لوحة الوثبات (للإدارة والمشرفين) ── */
-function wathbaPanel(i,compact){
- const admin=S.role==='admin',mine=new Set(myStudents().map(s=>s.code)),total=mine.size||1;
- const list=WATHBAS.slice().sort((a,b)=>b.opens-a.opens).slice(0,compact?3:12);
- if(compact&&!list.length)return '';
- const tag={soon:['قادمة','mid'],open:['نازلة الآن','ok'],closed:['أُقفلت','']};
- return `<div class="sec-title stagger" style="--i:${i}"><div>
-   <p class="eyebrow">مادة قصيرة بموعد معلن — من يُنجزها يدخل السحب</p><h2>الوثبات</h2></div>
-   ${admin?'<button class="btn sm" onclick="openWathba()">+ وثبة جديدة</button>':''}</div>
-  <div class="card stagger" style="--i:${i+1};margin-bottom:14px">
-  ${list.length?list.map(w=>{const s=wState(w),n=WDONE.filter(x=>x.w===w.id&&mine.has(x.code)).length;
-   return `<div class="wrowx">
-    <span class="wst ${s}"></span>
-    <div class="meta"><b>${esc(w.title)} <span class="pill ${tag[s][1]}">${tag[s][0]}</span></b>
-     <span>${s==='soon'?'تنزل '+fmtWhen(w.opens):s==='open'?'تُقفل '+fmtWhen(w.closes):fmtWhen(w.opens)}
-      · <span class="num">${w.amount}</span> ${wUnit(w)}${w.teaser&&s==='soon'?' · «'+esc(w.teaser)+'»':''}</span>
-     <div class="wprog"><span class="bar"><i data-w="${pct(n,total)}" style="background:var(--gold)"></i></span>
-      <small><span class="num">${n}</span> من <span class="num">${mine.size}</span></small></div></div>
-    <span class="qgrp">${n?`<button class="qbtn" onclick="openBenefits('${w.id}')">الفوائد</button>`:''}
-     ${admin&&s!=='closed'?`<button class="qbtn" onclick="openWathba('${w.id}')">تعديل</button>`:''}
-     ${admin&&s!=='closed'?`<button class="qbtn del" onclick="cancelWathba('${w.id}')">إلغاء</button>`:''}</span></div>`}).join('')
-   :`<div class="empty">ما فيه وثبات بعد. جدول أول وثبة وأعلن موعدها للطلاب مبكرًا.</div>`}</div>`}
-function openBenefits(id){S.modal={t:'benefits',id,list:null};renderModal();
- SB.rpc('wathba_benefits',{p_wathba:id}).then(({data,error})=>{
-  if(!S.modal||S.modal.id!==id)return;
-  if(error){S.modal=null;renderModal();return toast(error.message)}
-  S.modal.list=data||[];renderModal()})}
-function copyBenefits(){const m=S.modal,w=WATHBAS.find(x=>x.id===m.id);if(!m||!m.list)return;
- const txt='فوائد وثبة «'+(w?w.title:'')+'»\n\n'+m.list.map(x=>'• '+x.benefit+' — '+x.name).join('\n');
- navigator.clipboard.writeText(txt).then(()=>toast('نُسخت الفوائد — جاهزة للقاء.'),()=>toast('تعذّر النسخ.'))}
-function cancelWathba(id){const w=WATHBAS.find(x=>x.id===id);
- if(!w||!confirm('إلغاء وثبة «'+w.title+'»؟ من أنجزها يحتفظ بإنجازه.'))return;
- rpcState('manage_wathba',{p_action:'cancel',p_payload:{id}})}
-/* datetime-local بتوقيت الرياض: نبنيه يدويًا لأن جهاز المستخدم قد يكون بتوقيت آخر */
-function riyadhLocal(ms){return new Date(ms+TZ*3600000).toISOString().slice(0,16)}
-function defaultOpen(){const n=riyadhNow(),d=new Date(n);d.setUTCHours(20,0,0,0);
- if(n.getUTCHours()>=19)d.setUTCDate(d.getUTCDate()+1);return d.getTime()-TZ*3600000}
-function openWathba(id){const w=id&&WATHBAS.find(x=>x.id===id);
- S.modal={t:'wathba',id:w?w.id:null,type:w?w.type:'read',ti_:w?w.title:'',te_:w?w.teaser:'',
-  de_:w?w.desc:'',am_:w?w.amount:'',ur_:w?w.url:'',op_:riyadhLocal(w?w.opens:defaultOpen()),du_:'eod'};renderModal()}
-function keepWathbaForm(){const g=i=>document.getElementById(i),m=S.modal;
- if(g('wt'))m.ti_=g('wt').value;if(g('wte'))m.te_=g('wte').value;if(g('wde'))m.de_=g('wde').value;
- if(g('wam'))m.am_=g('wam').value;if(g('wur'))m.ur_=g('wur').value;if(g('wop'))m.op_=g('wop').value;
- if(g('wdu'))m.du_=g('wdu').value}
-function saveWathba(){keepWathbaForm();const m=S.modal;
- if(!m.ti_.trim())return document.getElementById('wt').focus();
- const am=parseInt(m.am_,10);if(!am||am<1)return document.getElementById('wam').focus();
- if(!m.op_)return document.getElementById('wop').focus();
- if(m.ur_&&!/^https:\/\//i.test(m.ur_.trim()))return toast('الرابط يجب أن يبدأ بـ https://');
- rpcState('manage_wathba',{p_action:m.id?'update':'create',p_payload:{id:m.id,title:m.ti_.trim(),teaser:m.te_.trim(),
-  description:m.de_.trim(),course_type:m.type,amount:am,resource_url:m.ur_.trim(),
-  opens_at:m.op_+':00+03:00',duration:m.du_}})}
-function wathbaForm(m){const rd=m.type==='read';
- return `<h3>${m.id?'تعديل الوثبة':'وثبة جديدة'}</h3>
-  <p class="sub">يرى الطلاب التشويقة والموعد فورًا، والمادة تنكشف لحظة النزول.</p>
-  <label for="wt">عنوان المادة</label><input id="wt" type="text" maxlength="120" value="${esc(m.ti_)}" placeholder="مثال: فصل «حسن الخلق» من رياض الصالحين">
-  <label for="wte">تشويقة قبل النزول <span style="font-size:11px">(اختياري)</span></label>
-  <input id="wte" type="text" maxlength="200" value="${esc(m.te_)}" placeholder="مثال: عشر صفحات تغيّر نظرتك للوقت">
-  <label>النوع</label><div class="seg">
-   <button aria-pressed="${rd}" onclick="keepWathbaForm();S.modal.type='read';renderModal()">قراءة</button>
-   <button aria-pressed="${!rd}" onclick="keepWathbaForm();S.modal.type='listen';renderModal()">سماع</button></div>
-  <label for="wam">${rd?'عدد الصفحات':'عدد الدقائق'}</label>
-  <div style="display:flex;align-items:center;gap:10px"><input id="wam" type="number" min="1" max="1000" value="${m.am_}" placeholder="${rd?'10':'20'}">
-   <span class="chip" style="white-space:nowrap">${rd?'صفحة':'دقيقة'}</span></div>
-  <label for="wur">رابط المادة <span style="font-size:11px">(اختياري)</span></label>
-  <input id="wur" type="url" dir="ltr" value="${esc(m.ur_)}" placeholder="https://…">
-  <label for="wde">وصف قصير</label><textarea id="wde" rows="2" maxlength="1000" placeholder="وش يقرأ بالضبط؟ من صفحة كم إلى كم؟">${esc(m.de_)}</textarea>
-  <label for="wop">موعد النزول (بتوقيت الرياض)</label><input id="wop" type="datetime-local" value="${m.op_}">
-  <label for="wdu">مدة بقائها مفتوحة</label><select id="wdu">
-   ${[['eod','حتى نهاية اليوم (٣ فجرًا)'],['2','ساعتين'],['6','٦ ساعات'],['12','١٢ ساعة'],['24','٢٤ ساعة']].map(([v,l])=>
-    `<option value="${v}"${m.du_===v?' selected':''}>${l}</option>`).join('')}</select>
+ if(S.role!=='student')return '';
+ const t=wTrack();if(!t.length)return '';
+ const me=S.me.code,closes=wClosesAt();
+ const daysLeft=Math.max(0,Math.ceil((closes-Date.now())/864e5));
+ const doneN=t.filter(w=>wProgress(w,me)>=w.amount).length;
+ const all=doneN===t.length;
+ return `<section class="trk stagger ${all?'allin':''}" style="--i:${i}">
+  <div class="trkhead">
+   <div><span class="trktag">★ مسار الوثبات</span>
+    <h2>${all?'أتممتَ الوثبات الثلاث':'ثلاث وثبات خلال أسبوعين'}</h2>
+    <p class="trksub">${all?'ترشّحتَ للجائزة — وما بقي بعدها إلا الزيادة.'
+      :'من أتمّ الثلاث ترشّح للجائزة. تقدر تبدأ بأيّها شئت.'}</p></div>
+   <div class="trkdays"><div class="d num" id="trkdays">${daysLeft}</div>
+    <div class="l">${daysLeft===1?'يوم متبقٍ':'أيام متبقية'}</div>
+    <div class="dn">${doneN}/${t.length} مكتملة</div></div></div>
+  <div class="trkrows">${t.map((w,k)=>wRow(w,me,k)).join('')}</div>
+  ${all?'':`<p class="trknote">لتختم في الموعد: ${t.filter(w=>wPace(w,me).left>0)
+    .map(w=>{const p=wPace(w,me);return p.per===2?`<b>${uname(w.unit,2)}</b>`
+      :`<b>${p.per}</b> ${uname(w.unit,p.per)}`}).join(' · ')} يوميًا.</p>`}
+ </section>`}
+function wRow(w,code,k){
+ const p=wPace(w,code),fin=p.state==='done';
+ const lbl={done:'✓ أتممتها',ahead:'متقدّم',ontime:'في الموعد',behind:'متأخر'}[p.state];
+ const tail=fin?'':p.state==='behind'
+   ? `متأخر <b>${Math.abs(p.diff)}</b> ${uname(w.unit,Math.abs(p.diff))} — ارفعها إلى <b>${p.per}</b> ${uname(w.unit,p.per)} يوميًا لتلحق`
+   : `يكفيك <b>${p.per===2?uname(w.unit,2):p.per+'</b> '+uname(w.unit,p.per)} يوميًا`.replace('<b></b>','');
+ return `<div class="trkrow ${p.state}" style="--k:${k}" id="tr_${w.id}">
+  <span class="trknum num">${k+1}</span>
+  <div class="trkbody">
+   <div class="trktop"><b>${esc(w.title)}</b><span class="trkst">${lbl}</span></div>
+   <div class="trkbar"><i data-w="${p.pct}"></i><u style="right:${Math.min(100,Math.round(p.should/w.amount*100))}%"></u></div>
+   <div class="trkmeta">
+    <span class="num">${p.done}</span> من <span class="num">${w.amount}</span> ${uname(w.unit,w.amount)}
+    <span class="trkdot">·</span>${tail}</div>
+   <div class="trkact">
+    ${w.url?`<a class="trklink" href="${esc(w.url)}" target="_blank" rel="noopener noreferrer">${
+      w.unit==='video'?'افتح السلسلة ↗':w.unit==='verse'?'افتح المتن ↗':'افتح الكتاب ↗'}</a>`:''}
+    ${w.bySup?`<span class="trkby">${(()=>{const m=memOf(w.id,code);
+       return m?'آخر تسميع '+fmtDay(m.at)+(m.by?' · '+esc(m.by):''):'يسجّله مشرفك بعد التسميع'})()}</span>`
+     :fin?'<span class="trkby">ختمتَها — بارك الله فيك</span>'
+     :`<button class="trkgo" onclick="openWLog('${w.id}')">سجّل ${w.unit==='video'?'مقاطع':'صفحات'}</button>`}
+   </div></div></div>`}
+function fmtDay(iso){const d=new Date(iso),k=Math.round((Date.now()-d.getTime())/864e5);
+ return k<=0?'اليوم':k===1?'أمس':'قبل '+k+' أيام'}
+function openWLog(id){S.modal={t:'wlog',id};renderModal()}
+function saveWLog(){const m=S.modal,w=WATHBAS.find(x=>x.id===m.id);
+ const v=parseInt(document.getElementById('wv').value,10);
+ if(!v||v<1)return document.getElementById('wv').focus();
+ const p=wPace(w,S.me.code);
+ if(v>p.left)return toast('باقٍ عليك '+p.left+' '+uname(w.unit,p.left)+' فقط.');
+ rpcState('log_wathba',{p_wathba:w.id,p_value:v},'انحفظ إنجازك في المسار.')}
+function wlogModal(m){const w=WATHBAS.find(x=>x.id===m.id);if(!w)return '<h3>غير موجودة</h3>';
+ const p=wPace(w,S.me.code),vid=w.unit==='video';
+ return `<h3>${esc(w.title)}</h3>
+  <p class="sub">${vid?'كم مقطعًا أتممت؟':'كم صفحة قرأت؟'}</p>
+  <label for="wv">${vid?'عدد المقاطع':'عدد الصفحات'}</label>
+  <div style="display:flex;align-items:center;gap:10px">
+   <input id="wv" type="number" min="1" max="${p.left}" inputmode="numeric" placeholder="${vid?'مثال: 2':'مثال: 12'}">
+   <span class="chip" style="white-space:nowrap">${vid?'مقطع':'صفحة'}</span></div>
+  <p style="font-size:12.5px;color:var(--muted);margin:9px 0 0">
+   أنجزت <span class="num">${p.done}</span> من <span class="num">${w.amount}</span> —
+   باقٍ <span class="num">${p.left}</span>، ${p.daysLeft>1?`وأمامك <span class="num">${p.daysLeft}</span> أيام`:'واليوم آخر يوم'}.
+   ${vid?'<br>كل مقطع يُحتسب '+w.unitMin+' دقيقة في سجل إنجازك.':''}</p>
   <div class="row"><button class="btn outline" onclick="closeModal()">إلغاء</button>
-   <button class="btn" onclick="saveWathba()">${m.id?'حفظ التعديل':'جدولة الوثبة'}</button></div>`}
-function benefitsModal(m){const w=WATHBAS.find(x=>x.id===m.id);
- return `<h3>فوائد الوثبة</h3><p class="sub">${esc(w?w.title:'')}</p>
-  ${m.list===null?'<div class="empty"><span class="spin"></span></div>'
-   :m.list.length?`<div class="benlist">${m.list.map((x,k)=>`<figure class="benitem" style="--k:${k}">
-     <blockquote>${esc(x.benefit)}</blockquote><figcaption>${esc(x.name)} <span>${esc(x.group||'')}</span></figcaption></figure>`).join('')}</div>`
-   :'<div class="empty">ما أنجزها أحد من طلابك بعد.</div>'}
-  <div class="row">${m.list&&m.list.length?'<button class="btn outline" onclick="copyBenefits()">انسخها للقاء</button>':''}
-   <button class="btn" onclick="closeModal()">إغلاق</button></div>`}
+   <button class="btn" onclick="saveWLog()">حفظ</button></div>`}
 
-/* ── السحب: اختيار مرجّح بعدد البطاقات، بعشوائية التشفير لا Math.random ── */
-function raffleRows(){return STUDENTS.map(s=>({s,...ticketsOf(s.code)})).filter(r=>r.total>0)
- .sort((a,b)=>b.total-a.total||a.s.name.localeCompare(b.s.name,'ar'))}
-function pickWeighted(rows){const tot=rows.reduce((t,r)=>t+r.total,0);if(!tot)return null;
- const a=new Uint32Array(1);crypto.getRandomValues(a);let x=a[0]/4294967296*tot;
- for(const r of rows){if((x-=r.total)<0)return r}return rows[rows.length-1]}
-function raffleCard(i){
- if(!chalOn())return '';
- const rows=raffleRows(),tot=rows.reduce((t,r)=>t+r.total,0);
- return `<div class="card stagger rafcard" style="--i:${i};margin-top:14px">
-  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-   <div><p class="eyebrow">كل وثبة بطاقة · إتمام التحدي +${RAFFLE_BONUS}</p><h2>السحب</h2></div>
-   ${S.role==='admin'&&rows.length?'<button class="btn sm rafgo" onclick="startDraw()">ابدأ السحب</button>':''}</div>
-  ${rows.length?`<div class="rafgrid">${rows.map(r=>`<div class="rafrow">
-    <span class="rn">${esc(r.s.name)}</span>
-    <span class="tix">${[...Array(Math.min(r.total,12))].map((_,k)=>`<i style="--t:${k}"></i>`).join('')}</span>
-    <span class="rv num">${r.total}</span>
-    <span class="rp num">${Math.round(r.total/tot*100)}%</span></div>`).join('')}</div>`
-   :'<div class="empty">ما فيه بطاقات بعد — تنزل مع أول وثبة.</div>'}</div>`}
-function chalTab(){return chalView()+wathbaPanel(8)+raffleCard(10)}
-let DRAW=null;
-function startDraw(exclude){
- const rows=raffleRows().filter(r=>!(exclude||[]).includes(r.s.code));
- if(!rows.length)return toast('لا يوجد مشاركون متبقّون.');
- const win=pickWeighted(rows),names=rows.map(r=>r.s.name);
- DRAW={win,exclude:[...(exclude||[]),win.s.code]};
- const root=document.getElementById('modalRoot');
- root.innerHTML=`<div class="drawov" role="dialog" aria-modal="true" aria-label="السحب">
-  <div class="drawbox"><p class="drawk">${esc(CHALLENGE.title||'تحدي الأسبوع')}</p>
-   <div class="slot"><span class="slotname" id="slotname">…</span></div>
-   <p class="drawsub" id="drawsub">يجري السحب بين <b class="num">${rows.length}</b> مشاركًا</p>
-   <div class="drawact" id="drawact"></div></div></div>`;
- const el=document.getElementById('slotname'),token=DRAW;
- /* تباطؤ تدريجي: الفاصل يكبر تربيعيًا حتى يستقر على الفائز.
-    token يوقف الحلقة لو أُغلق السحب أو بدأ سحب جديد أثناء الدوران. */
- const frames=reduced?1:30;let k=0;
- const step=()=>{if(DRAW!==token||!el.isConnected)return;k++;
-  const last=k>=frames,name=last?win.s.name:names[(Math.random()*names.length)|0];
-  el.textContent=name;if(!reduced)el.className='slotname '+(k%2?'sa':'sb');
-  if(!last)return setTimeout(step,40+k*k*0.55);
-  el.className='slotname win';
-  document.getElementById('drawsub').innerHTML=`<b>الفائز</b> · <span class="num">${win.total}</span> ${win.total===1?'بطاقة':'بطاقات'}`;
-  document.getElementById('drawact').innerHTML=`<button class="btn outline" onclick="startDraw(DRAW.exclude)">سحب فائز آخر</button>
-   <button class="btn" onclick="endDraw()">إغلاق</button>`;
-  burst(document.querySelector('.slot'),34)};
- step()}
-function endDraw(){DRAW=null;const o=document.querySelector('.drawov');
- if(o&&!reduced){o.classList.add('out');setTimeout(renderModal,260)}else renderModal()}
+/* ── ملخص المسار في شاشة المشرف ── */
+function wathbaSupervisorNote(i){
+ const t=wTrack();if(!t.length)return '';
+ const mine=myStudents(),closes=wClosesAt();
+ const full=mine.filter(s=>wAllDone(s.code)).length;
+ const mem=t.find(w=>w.bySup);
+ const unrec=mem?mine.filter(s=>!memOf(mem.id,s.code)).length:0;
+ return `<div class="trk mini stagger" style="--i:${i}">
+  <div class="trkhead">
+   <div><span class="trktag">★ مسار الوثبات</span>
+    <h2>${full} من ${mine.length} أتمّوا الثلاث</h2>
+    <p class="trksub">يُقفل ${fmtWhen(closes)}${unrec?` · <b>${unrec}</b> ${unrec===1?'طالب لم يُسمّع':'طلاب لم يُسمّعوا'} بعد`:''}</p></div>
+   <div class="trkdays"><div class="d num">${Math.max(0,Math.ceil((closes-Date.now())/864e5))}</div>
+    <div class="l">أيام متبقية</div></div></div>
+  <div class="trkrows">${t.map((w,k)=>{const dn=mine.filter(s=>wProgress(w,s.code)>=w.amount).length;
+   return `<div class="trkrow ontime" style="--k:${k}"><span class="trknum num">${k+1}</span>
+    <div class="trkbody"><div class="trktop"><b>${esc(w.title)}</b>
+      <span class="trkst">${dn}/${mine.length}</span></div>
+     <div class="trkbar"><i data-w="${pct(dn,mine.length)}"></i></div></div></div>`}).join('')}</div>
+  ${mem?`<p class="trknote"><button class="trkgo" onclick="go('recite')">افتح شاشة التسميع ←</button></p>`:''}
+ </div>`}
+
+/* ── شاشة التسميع: المشرف لطلابه، والتنفيذي للجميع ── */
+function recitationView(){
+ const w=wTrack().find(x=>x.bySup);
+ if(!w)return '<div class="card empty stagger">ما فيه وثبة حفظ نشطة الآن.</div>';
+ const ro=S.role==='observer',mine=myStudents();
+ const byGroup={};mine.forEach(s=>(byGroup[s.supervisor]||(byGroup[s.supervisor]=[])).push(s));
+ const done=mine.filter(s=>wProgress(w,s.code)>=w.amount).length;
+ const started=mine.filter(s=>wProgress(w,s.code)>0).length;
+ const avg=mine.length?Math.round(mine.reduce((t,s)=>t+wProgress(w,s.code),0)/mine.length):0;
+ const card=s=>{const v=wProgress(w,s.code),m=memOf(w.id,s.code),fin=v>=w.amount;
+  return `<div class="recrow ${fin?'fin':''}" id="rec_${s.code}">
+   <span class="recav">${esc(s.name.trim()[0])}</span>
+   <span class="recnm"><b>${esc(s.name)}</b>
+    <small id="recwhen_${s.code}">${m?'آخر تسميع '+fmtDay(m.at)+(m.by?' · '+esc(m.by):''):'لم يُسمّع بعد'}</small></span>
+   <span class="recbar"><i id="recbar_${s.code}" style="width:${pct(v,w.amount)}%"></i></span>
+   ${ro?`<span class="recval num" id="recval_${s.code}">${v}</span>`
+    :`<span class="recinp">وصل إلى البيت
+      <input type="number" min="0" max="${w.amount}" value="${v}" id="recin_${s.code}"
+        onfocus="this.select()" onkeydown="if(event.key==='Enter')saveRec('${w.id}','${s.code}',this)"
+        onblur="saveRec('${w.id}','${s.code}',this)"></span>`}
+   <span class="recpill ${fin?'ok':''}" id="recpill_${s.code}">${fin?'✓ أتمّ':pct(v,w.amount)+'%'}</span></div>`};
+ const groups=Object.entries(byGroup).map(([sup,list],gi)=>{
+  const v=SUPERVISORS.find(x=>x.code===sup),last=list.map(s=>memOf(w.id,s.code)).filter(Boolean)
+    .sort((a,b)=>b.at.localeCompare(a.at))[0];
+  return `<div class="card stagger" style="--i:${2+gi};margin-bottom:14px">
+   <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+    <div><p class="eyebrow">${v?esc(v.name):'—'}</p><h2 style="font-size:19px">${v?esc(v.group):'مجموعة'}</h2></div>
+    <span class="chip">${last?'آخر تسميع في المجموعة '+fmtDay(last.at):'لم يُسجّل شيء بعد'}</span></div>
+   <div class="reclist">${list.map(card).join('')}</div></div>`}).join('');
+ return `<div class="hero stagger"><div class="htop">
+   <div><p class="hlab">${esc(w.title)}</p><h2>التسميع</h2></div>
+   <div class="hstats">
+    <div class="hstat"><div class="hk">أتمّوا الحفظ</div><div class="hv tealv"><span class="num" data-to="${done}">0</span> <small>من ${mine.length}</small></div></div>
+    <div class="hstat"><div class="hk">بدأوا</div><div class="hv"><span class="num" data-to="${started}">0</span> <small>طالب</small></div></div>
+    <div class="hstat"><div class="hk">متوسط ما حُفظ</div><div class="hv goldv"><span class="num" data-to="${avg}">0</span> <small>بيتًا</small></div></div>
+    <div class="hstat"><div class="hk">أيام متبقية</div><div class="hv"><span class="num" data-to="${Math.max(0,Math.ceil((w.closes-Date.now())/864e5))}">0</span></div></div>
+   </div></div></div>
+  ${ro?'':`<div class="nudge stagger" style="--i:1">✎ اكتب رقم البيت الذي وصل إليه الطالب ثم اضغط Enter أو انتقل للتالي — يُحفظ مباشرة.</div>`}
+  ${groups}`}
+/* حفظ موضعي: لا نعيد بناء الشاشة بعد كل طالب — المشرف يعبّئ الصف تلو الآخر */
+async function saveRec(wid,code,el){
+ const w=WATHBAS.find(x=>x.id===wid);if(!w)return;
+ let v=parseInt(el.value,10);if(isNaN(v))v=0;v=Math.max(0,Math.min(w.amount,v));
+ const cur=wProgress(w,code);
+ if(v===cur){el.value=cur;return}
+ el.disabled=true;
+ try{const {data,error}=await SB.rpc('set_memorize',{p_public_code:code,p_wathba:wid,p_verses:v});
+  if(error)throw error;
+  const row=WMEM.find(x=>x.w===wid&&x.code===code);
+  if(row){row.verses=+data.verses;row.by=data.by;row.at=data.at}
+  else WMEM.push({w:wid,code,verses:+data.verses,by:data.by,at:data.at});
+  el.value=data.verses;paintRec(w,code,+data.verses,data.by,data.at);
+ }catch(e){el.value=cur;toast(e.message||'تعذّر الحفظ.')}
+ finally{el.disabled=false}}
+function paintRec(w,code,v,by,at){
+ const fin=v>=w.amount,row=document.getElementById('rec_'+code);
+ const bar=document.getElementById('recbar_'+code),pill=document.getElementById('recpill_'+code);
+ const when=document.getElementById('recwhen_'+code);
+ if(bar)bar.style.width=pct(v,w.amount)+'%';
+ if(pill){pill.className='recpill'+(fin?' ok':'');pill.textContent=fin?'✓ أتمّ':pct(v,w.amount)+'%'}
+ if(when)when.textContent='آخر تسميع '+fmtDay(at)+(by?' · '+by:'');
+ if(row){row.classList.toggle('fin',fin);
+  if(!reduced){row.classList.remove('saved');void row.offsetWidth;row.classList.add('saved')}}}
+
+/* ── متابعة التنفيذي: من ترشّح ── */
+function wathbaAdminView(){
+ const t=wTrack();
+ if(!t.length)return '<div class="card empty stagger">ما فيه مسار وثبات نشط.</div>';
+ const closes=wClosesAt(),daysLeft=Math.max(0,Math.ceil((closes-Date.now())/864e5));
+ const cands=wCandidates();
+ const rows=STUDENTS.map(s=>({s,n:t.filter(w=>wProgress(w,s.code)>=w.amount).length,
+   v:t.reduce((a,w)=>a+pct(wProgress(w,s.code),w.amount),0)/t.length}))
+  .sort((a,b)=>b.n-a.n||b.v-a.v||a.s.name.localeCompare(b.s.name,'ar'));
+ return `<div class="hero stagger"><div class="htop">
+   <div><p class="hlab">ثلاث وثبات · يُقفل ${fmtWhen(closes)}</p><h2>مسار الوثبات</h2></div>
+   <div class="hstats">
+    <div class="hstat"><div class="hk">مترشحون للجائزة</div><div class="hv goldv"><span class="num" data-to="${cands.length}">0</span> <small>من ${STUDENTS.length}</small></div></div>
+    <div class="hstat"><div class="hk">أيام متبقية</div><div class="hv tealv"><span class="num" data-to="${daysLeft}">0</span></div></div>
+    <div class="hstat"><div class="hk">بدأوا المسار</div><div class="hv"><span class="num" data-to="${rows.filter(r=>r.v>0).length}">0</span> <small>طالب</small></div></div>
+   </div></div></div>
+  <div class="grid g2" style="margin-bottom:14px">${t.map((w,k)=>{
+   const dn=STUDENTS.filter(s=>wProgress(w,s.code)>=w.amount).length;
+   const st=STUDENTS.filter(s=>wProgress(w,s.code)>0).length;
+   return `<div class="card stagger" style="--i:${1+k}">
+    <p class="eyebrow">${w.bySup?'بتسميع المشرف':'يسجّلها الطالب'} · <span class="num">${w.amount}</span> ${uname(w.unit,w.amount)}</p>
+    <h2 style="font-size:19px">${esc(w.title)}</h2>
+    <div class="bar" style="margin-top:12px"><i data-w="${pct(dn,STUDENTS.length)}" style="background:var(--gold)"></i></div>
+    <div style="display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin-top:7px">
+     <span><b class="num" style="color:var(--ink)">${dn}</b> أتمّوها</span>
+     <span><span class="num">${st}</span> بدأوها</span></div></div>`}).join('')}</div>
+  <div class="card stagger" style="--i:4"><p class="eyebrow">يُشترط إتمام الثلاث للترشّح</p><h2>حال الطلاب</h2>
+   <div style="overflow-x:auto"><table style="margin-top:12px;min-width:540px"><thead><tr><th></th><th>الطالب</th>
+    ${t.map(w=>`<th>${esc(w.title.split(' ').slice(0,2).join(' '))}</th>`).join('')}<th>الترشّح</th></tr></thead><tbody>
+   ${rows.map((r,i)=>`<tr style="--i:${i}" class="${r.n===t.length?'me-row':''}">
+     <td class="rank ${i<3?'top':''}">${i+1}</td><td>${esc(r.s.name)}</td>
+     ${t.map(w=>{const p=wPace(w,r.s.code);
+      return `<td><span class="cellbar ${p.state}"><i style="width:${p.pct}%"></i></span>
+       <small class="num">${p.done}/${w.amount}</small></td>`}).join('')}
+     <td>${r.n===t.length?'<span class="pill ok">✓ مترشّح</span>':`<span class="chip"><span class="num">${r.n}</span>/${t.length}</span>`}</td></tr>`).join('')}
+   </tbody></table></div></div>`}
 
 /* ---------- المجموعات ونقل الطلاب ---------- */
 function groupsPanel(i){
@@ -2745,6 +2661,7 @@ function modalHTML(){
      <b>${esc(v.group)}</b><span class="chip">${esc(v.name)} · ${STUDENTS.filter(x=>x.supervisor===v.code).length} طلاب</span>
      ${v.code===st.supervisor?'<span class="pill ok">مجموعته الآن</span>':'<span style="color:var(--teal)">←</span>'}</button>`).join('')}</div>
    <div class="row"><button class="btn outline" onclick="closeModal()">إلغاء</button></div>`}
+ if(m.t==='wlog')b=wlogModal(m);
  if(m.t==='wathba')b=wathbaForm(m);
  if(m.t==='benefits')b=benefitsModal(m);
  if(m.t==='rename'){const v=SUPERVISORS.find(x=>x.code===m.sup);
@@ -2867,15 +2784,15 @@ function renderShell(){
  let main='';
  if(S.role==='student')main=tabs([{id:'today',label:'اليوم'},{id:'log',label:'سجل إنجازي'},{id:'board',label:'المتصدرون'}])
    +(S.view==='field'?fieldView():S.view==='log'?logView():S.view==='board'?boardView():todayView());
- if(S.role==='supervisor')main=tabs([{id:'students',label:'طلابي'},{id:'shelves',label:'الرفوف'},{id:'board',label:'المتصدرون'}])
-   +(S.student?detailView():S.view==='shelves'?shelvesView():S.view==='board'?boardView():studentsView());
- if(S.role==='admin')main=tabs([{id:'students',label:'الطلاب'},{id:'chal',label:'التحدي والوثبات'},{id:'loans',label:'العهدة'},{id:'shelves',label:'الرفوف'},{id:'people',label:'المجموعات'},{id:'courses',label:'المقررات'},{id:'board',label:'المتصدرون'}])
-   +(S.student?detailView():S.view==='chal'?chalTab():S.view==='loans'?loansView():S.view==='shelves'?shelvesView():S.view==='people'?peopleView():S.view==='courses'?coursesView():S.view==='board'?boardView():studentsView());
- if(S.role==='observer')main=tabs([{id:'students',label:'الطلاب'},{id:'chal',label:'التحدي والوثبات'},{id:'loans',label:'العهدة'},{id:'shelves',label:'الرفوف'},{id:'people',label:'المجموعات'},{id:'courses',label:'المقررات'},{id:'board',label:'المتصدرون'}])
+ if(S.role==='supervisor')main=tabs([{id:'students',label:'طلابي'},{id:'recite',label:'التسميع'},{id:'shelves',label:'الرفوف'},{id:'board',label:'المتصدرون'}])
+   +(S.student?detailView():S.view==='recite'?recitationView():S.view==='shelves'?shelvesView():S.view==='board'?boardView():studentsView());
+ if(S.role==='admin')main=tabs([{id:'students',label:'الطلاب'},{id:'wathba',label:'الوثبات'},{id:'recite',label:'التسميع'},{id:'loans',label:'العهدة'},{id:'shelves',label:'الرفوف'},{id:'people',label:'المجموعات'},{id:'courses',label:'المقررات'},{id:'board',label:'المتصدرون'}])
+   +(S.student?detailView():S.view==='wathba'?wathbaAdminView():S.view==='recite'?recitationView():S.view==='loans'?loansView():S.view==='shelves'?shelvesView():S.view==='people'?peopleView():S.view==='courses'?coursesView():S.view==='board'?boardView():studentsView());
+ if(S.role==='observer')main=tabs([{id:'students',label:'الطلاب'},{id:'wathba',label:'الوثبات'},{id:'recite',label:'التسميع'},{id:'loans',label:'العهدة'},{id:'shelves',label:'الرفوف'},{id:'people',label:'المجموعات'},{id:'courses',label:'المقررات'},{id:'board',label:'المتصدرون'}])
    +readOnlyNotice()
-   +(S.student?detailView():S.view==='chal'?chalTab():S.view==='loans'?loansView():S.view==='shelves'?shelvesView():S.view==='people'?peopleView():S.view==='courses'?coursesView():S.view==='board'?boardView():studentsView());
+   +(S.student?detailView():S.view==='wathba'?wathbaAdminView():S.view==='recite'?recitationView():S.view==='loans'?loansView():S.view==='shelves'?shelvesView():S.view==='people'?peopleView():S.view==='courses'?coursesView():S.view==='board'?boardView():studentsView());
  shell().innerHTML=topbar()+`<main class="wrap ${anim?'anim':''}" style="padding-bottom:70px">${main}</main>`;
- requestAnimationFrame(()=>{moveTabInd();observeReveals(anim);startTicker()});
+ requestAnimationFrame(()=>{moveTabInd();observeReveals(anim)});
 }
 function moveTabInd(){const t=$('#tabs');if(!t)return;const a=t.querySelector('[aria-selected="true"]'),ind=$('#tabInd');
  if(!a||!ind)return;ind.style.width=a.offsetWidth+'px';
